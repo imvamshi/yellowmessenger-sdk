@@ -49,7 +49,7 @@ public class PreferencesManager {
 
     public void setAccountProperties(HashMap<String,String> accountProperties){
         for(String key:accountProperties.keySet()){
-            editor.putString("props"+key, accountProperties.get(key));
+            editor.putString("props-"+key, accountProperties.get(key));
         }
         editor.commit();
     }
