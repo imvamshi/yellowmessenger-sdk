@@ -89,14 +89,14 @@
 
                 <TextView
                     android:id="@+id/product_action_button_secondary"
-                    android:layout_alignParentBottom="true"
+                    android:layout_above="@+id/product_action_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/border_top"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="secondary action"
+                    android:text="Secondary Action"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:typeface="serif" />

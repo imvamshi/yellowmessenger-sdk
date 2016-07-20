@@ -5,15 +5,8 @@
     android:layout_height="match_parent"
     tools:context="com.yellowmessenger.sampleapp.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:text="Hello World!" />
-
     <fragment
         android:id="@+id/yellow_messenger"
-        android:layout_below="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="com.yellowmessenger.sdk.fragments.DiscoverFragment"/>
