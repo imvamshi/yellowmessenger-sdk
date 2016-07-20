@@ -43,3 +43,13 @@ public class App extends Application {
 }
 ```
 
+Showing featured bots 
+```XML
+<fragment
+        android:id="@+id/yellow_messenger"
+        android:layout_below="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        class="com.yellowmessenger.sdk.fragments.DiscoverFragment"/>
+```
+
