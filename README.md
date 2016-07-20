@@ -19,7 +19,7 @@ App level gradle file
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Add this line 
-	compile 'com.github.yellowmessenger:yellowmessenger-sdk:04d9ad13ed'
+	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.1.1'
 }
 ```
 
@@ -52,4 +52,3 @@ Showing featured bots
         android:layout_height="wrap_content"
         class="com.yellowmessenger.sdk.fragments.DiscoverFragment"/>
 ```
-
