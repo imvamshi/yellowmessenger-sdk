@@ -22,6 +22,7 @@ import com.yellowmessenger.sdk.ChatActivity;
 import com.yellowmessenger.sdk.R;
 import com.yellowmessenger.sdk.models.Featured;
 import com.yellowmessenger.sdk.utils.FeaturedAdapter;
+import com.yellowmessenger.sdk.utils.PreferencesManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,7 +68,7 @@ public class DiscoverFragment extends Fragment {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("country", "IN");
-            jsonObject.put("type", "bajaj-finserv-bots");
+            jsonObject.put("type", PreferencesManager.getInstance(getContext()).getAccount());
         } catch (Exception e) {
             e.printStackTrace();
         }

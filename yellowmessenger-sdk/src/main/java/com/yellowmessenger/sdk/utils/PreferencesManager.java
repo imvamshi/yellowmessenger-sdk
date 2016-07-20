@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.yellowmessenger.sdk.models.XMPPUser;
 
+import java.util.HashMap;
+
 public class PreferencesManager {
     SharedPreferences pref;
 
@@ -45,5 +47,15 @@ public class PreferencesManager {
         return username!=null?new XMPPUser(username,password):null;
     }
 
+    public void setAccountProperties(HashMap<String,String> accountProperties){
+        for(String key:accountProperties.keySet()){
+            editor.putString("props"+key, accountProperties.get(key));
+        }
+        editor.commit();
+    }
+
+    public String getAccount(){
+        return pref.getString("props-account", null);
+    }
 
 }

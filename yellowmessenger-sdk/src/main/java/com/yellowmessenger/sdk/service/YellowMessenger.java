@@ -8,6 +8,9 @@ import com.activeandroid.ActiveAndroid;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.yellowmessenger.sdk.utils.FontsOverride;
+import com.yellowmessenger.sdk.utils.PreferencesManager;
+
+import java.util.HashMap;
 
 public class YellowMessenger {
     private Context _context;
@@ -17,15 +20,17 @@ public class YellowMessenger {
         this._context = context;
     }
 
-    public static void init(Context context){
+    public static void init(Context context, HashMap<String,String> properties){
         getInstance(context);
         // Start the xmpp service
         instance.startXMPPService();
         instance._context = context;
         ActiveAndroid.initialize(context);
+        PreferencesManager.getInstance(context).setAccountProperties(properties);
     }
 
     public static void terminate(){
+
     }
 
     private static YellowMessenger getInstance(Context context){
