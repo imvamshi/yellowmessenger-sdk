@@ -58,4 +58,7 @@ public class PreferencesManager {
         return pref.getString("props-account", null);
     }
 
+    public String getCountry(){
+        return pref.getString("props-country", null);
+    }
 }

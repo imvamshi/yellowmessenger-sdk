@@ -67,7 +67,7 @@ public class DiscoverFragment extends Fragment {
     public void fetchFeaturedBots() throws UnsupportedEncodingException {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("country", "IN");
+            jsonObject.put("country", PreferencesManager.getInstance(getContext()).getCountry());
             jsonObject.put("type", PreferencesManager.getInstance(getContext()).getAccount());
         } catch (Exception e) {
             e.printStackTrace();
