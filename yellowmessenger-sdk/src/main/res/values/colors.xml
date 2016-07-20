@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+
+    <color name="primary_button_color">#DD09c69e</color>
+    <color name="primary_button_color_pressed">#09c69e</color>
+    <color name="primary_color_light">#dd35455c</color>
+    <color name="primary_color">#35455C</color>
+    <color name="offer_color">#ff5c6e</color>
+    <color name="chat_background_color">#dd35455c</color>
+
+</resources>

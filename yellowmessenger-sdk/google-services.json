@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "627600186165",
+    "firebase_url": "https://ym-sdk.firebaseio.com",
+    "project_id": "ym-sdk",
+    "storage_bucket": "ym-sdk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627600186165:android:26cd47329033017f",
+        "android_client_info": {
+          "package_name": "com.yellowmessenger.sdk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627600186165-7hr2sf5qk87s2p2vdl5jnnamcg6pmpbb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkd9dLDANbm31AR5q-PYVM-HNFl1VBdEc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

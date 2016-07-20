@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Inactive tab -->
+    <item android:state_selected="false" android:state_focused="false"
+        android:state_pressed="false" >
+        <shape android:shape="rectangle">
+            <!--<corners android:bottomLeftRadius="5dp" android:bottomRightRadius="5dp"/>-->
+            <solid android:color="@color/primary_button_color" />
+        </shape>
+    </item>
+    <!-- Pressed tab -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <!--<corners android:bottomLeftRadius="5dp" android:bottomRightRadius="5dp"/>-->
+            <solid android:color="@color/primary_button_color_pressed" />
+        </shape>
+    </item>
+
+</selector>

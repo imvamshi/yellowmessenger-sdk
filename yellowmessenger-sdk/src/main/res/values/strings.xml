@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">yellowmessenger-sdk</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="featured">FEATURED</string>
+    <string name="chat_hint">Start typing here</string>
+    <string name="similar_products">Similar Products</string>
+</resources>

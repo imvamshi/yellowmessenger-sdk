@@ -1,0 +1,49 @@
+package com.yellowmessenger.sdk.utils;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.yellowmessenger.sdk.models.XMPPUser;
+
+public class PreferencesManager {
+    SharedPreferences pref;
+
+    // Editor reference for Shared preferences
+    SharedPreferences.Editor editor;
+
+    // Context
+    Context _context;
+    private static final String PREFER_NAME = "ym_sdk_preferences";
+    int PRIVATE_MODE = 0;
+
+
+    private static PreferencesManager instance;
+
+    public static PreferencesManager getInstance(Context context){
+        if(instance == null){
+            instance = new PreferencesManager(context);
+        }
+        return instance;
+    }
+
+    private PreferencesManager(Context context){
+        this._context = context;
+        pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        editor.apply();
+    }
+
+    public void setXMPPUser(XMPPUser user){
+        editor.putString("xmpp-username", user.getUsername());
+        editor.putString("xmpp-password", user.getPassword());
+        editor.commit();
+    }
+
+    public XMPPUser getXMPPUser(){
+        String username = pref.getString("xmpp-username", null);
+        String password = pref.getString("xmpp-password", null);
+        return username!=null?new XMPPUser(username,password):null;
+    }
+
+
+}

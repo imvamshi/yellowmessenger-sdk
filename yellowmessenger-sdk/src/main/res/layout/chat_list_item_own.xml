@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="50dp"
+    android:layout_marginTop="-10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        android:gravity="right">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            card_view:cardBackgroundColor="@color/chat_background_color"
+            card_view:cardCornerRadius="4dp"
+            android:minWidth="100dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="8dp"
+            android:id="@+id/message_holder"
+            android:gravity="right">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This message"
+                    android:autoLink="web|email|phone"
+                    android:textSize="16dp"
+                    android:id="@+id/message"
+                    android:textColor="#FFFFFF"
+                    android:clickable="false"
+                    android:textColorLink="@color/white"
+                    android:typeface="serif"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/products"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:id="@+id/product_image_layout">
+
+                <ImageView
+                    android:layout_width="225dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/product_image"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"
+                    />
+
+                <LinearLayout
+                    android:layout_width="225dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:text="Title"
+                        android:typeface="serif"
+                        android:id="@+id/product_title"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:text="Rs. 300"
+                        android:typeface="serif"
+                        android:id="@+id/product_price"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#555555"
+            android:gravity="right"
+            android:textSize="12dp"
+            android:clickable="false"
+            android:typeface="serif"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:text="10:53, jul 2014"
+            android:paddingBottom="5dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
