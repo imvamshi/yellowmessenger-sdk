@@ -359,6 +359,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             searchViewHolder.actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     ((ChatActivity)context).sendActionEvent(new SendActionEvent(chatResponse.getSearchResults().getAction()));
                 }
             });
