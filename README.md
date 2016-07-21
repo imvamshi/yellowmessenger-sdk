@@ -53,3 +53,15 @@ Showing featured bots
         android:layout_height="wrap_content"
         class="com.yellowmessenger.sdk.fragments.DiscoverFragment"/>
 ```
+
+Add this for getting a chat button for your app
+```XML
+<com.yellowmessenger.sdk.views.ChatButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/primary_color"
+        android:src="@drawable/ic_home_chat" />
+```
