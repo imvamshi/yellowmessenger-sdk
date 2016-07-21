@@ -340,10 +340,10 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
 
                 ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_name)).setText(products.get(i).getName());
                 if(products.get(i).getPrice()!=null){
-                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setVisibility(View.VISIBLE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price).setVisibility(View.VISIBLE);
                     ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setText(Html.fromHtml(products.get(i).getPrice()));
                 }else{
-                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setVisibility(View.GONE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price).setVisibility(View.GONE);
                 }
 
                 if (products.get(i).getPriceOriginal() != null && !products.get(i).getPriceOriginal().equals(products.get(i).getPrice())) {
@@ -361,7 +361,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                 }
                 if(products.get(i).getDescription()!=null){
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.VISIBLE);
-                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description)).setText(products.get(i).getDescription());
+                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description)).setText(Html.fromHtml(products.get(i).getDescription()));
                 }else{
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.GONE);
                 }
