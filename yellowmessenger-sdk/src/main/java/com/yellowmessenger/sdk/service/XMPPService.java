@@ -117,11 +117,11 @@ public class XMPPService extends Service {
         @Override
         public void connectionClosedOnError(Exception e) {
             try{
-                if(!mConnection.isConnected()){
+                if(!mConnection.isConnected() && isOnline()){
                     mConnection.connect();
                 }
             }catch (Exception ex){
-                ex.printStackTrace();
+                //ex.printStackTrace();
             }
             Log.d(TAG,"connection failed on error");
         }
