@@ -32,6 +32,7 @@ public class App extends Application {
         HashMap<String,String> props = new HashMap<>();
         props.put("account","<Account provided by yellowmessenger>");
         props.put("country","IN");
+        props.put("name","<Name>");
         YellowMessenger.init(this.getApplicationContext(),props);
     }
 
