@@ -410,7 +410,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                     buttonSecondary.setVisibility(View.GONE);
                 }
 
-                int detailsMarginBottom = products.get(i).getActions()!=null?(products.get(i).getActions().size()>1? margin42 *2:(products.get(i).getActions().size()>1)? margin42 :0):0;
+                int detailsMarginBottom = products.get(i).getActions()!=null?(products.get(i).getActions().size()>1? margin42 *2:(products.get(i).getActions().size()>0)? margin42 :0):0;
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(0,0,0,detailsMarginBottom);
