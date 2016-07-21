@@ -270,6 +270,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
                     addOptions(question);
                 }
             } else {
+                optionsLayout.removeAllViews();
                 initiateSendMessageListener();
             }
         }
