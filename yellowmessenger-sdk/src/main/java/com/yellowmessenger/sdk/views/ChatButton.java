@@ -34,10 +34,10 @@ public class ChatButton extends FloatingActionButton {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 Bundle bundle = new Bundle();
 
-                // bundle.putString("username", PreferencesManager.getInstance(getContext()).getAccount());
-                // bundle.putString("name", PreferencesManager.getInstance(getContext()).getName()!=null?PreferencesManager.getInstance(getContext()).getName():"Chat with us");
-                bundle.putString("username", "csia");
-                bundle.putString("name", "GVK Airport");
+                bundle.putString("username", PreferencesManager.getInstance(getContext()).getAccount());
+                bundle.putString("name", PreferencesManager.getInstance(getContext()).getName()!=null?PreferencesManager.getInstance(getContext()).getName():"Chat with us");
+                //bundle.putString("username", "csia");
+                //bundle.putString("name", "GVK Airport");
                 intent.putExtras(bundle);
                 getContext().startActivity(intent);
             }
