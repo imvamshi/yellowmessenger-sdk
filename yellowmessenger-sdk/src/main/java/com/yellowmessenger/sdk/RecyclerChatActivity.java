@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +25,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -37,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -57,8 +54,8 @@ import com.yellowmessenger.sdk.events.ChatUpdatedEvent;
 import com.yellowmessenger.sdk.events.MessageAcknowledgementEvent;
 import com.yellowmessenger.sdk.events.MessageReceivedEvent;
 import com.yellowmessenger.sdk.events.SendActionEvent;
-import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.events.SendMessageEvent;
+import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.fragments.ProductFragment;
 import com.yellowmessenger.sdk.models.ChatType;
@@ -82,12 +79,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
-public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener {
+public class RecyclerChatActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener {
 
     View.OnClickListener sendMessageListener = new View.OnClickListener() {
         @Override
@@ -134,7 +129,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_recycler_chat);
         EventBus.getDefault().register(this);
         editText = ((EditText) findViewById(R.id.sendText));
         chatMessages = new ArrayList<>();
@@ -148,7 +143,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         size15 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 15, getResources().getDisplayMetrics());
         elevation = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 2, getResources().getDisplayMetrics());
         optionsLayout = (ViewGroup) findViewById(R.id.optionsLayout);
-        queue = Volley.newRequestQueue(ChatActivity.this);
+        queue = Volley.newRequestQueue(RecyclerChatActivity.this);
 
         if(mGoogleApiClient==null){
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -166,17 +161,6 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     private void setListeners() {
         listView.setAdapter(chatListAdapter);
         sendView.setOnClickListener(sendMessageListener);
-        listView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()== MotionEvent.ACTION_MOVE){
-                    listViewMoving = true;
-                }else{
-                    listViewMoving = false;
-                }
-                return false;
-            }
-        });
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             private int mLastFirstVisibleItem;
 
@@ -454,7 +438,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
 
     public void selectImage(View view) {
         final CharSequence[] items = { getString(R.string.take_picture), getString(R.string.choose_photos) , getString(R.string.share_location)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(RecyclerChatActivity.this);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -469,7 +453,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
                     case 1:
                         Intent intent2 = new Intent(
                                 Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         intent2.setType("image/*");
                         startActivityForResult(
                                 Intent.createChooser(intent2, "Select File"),

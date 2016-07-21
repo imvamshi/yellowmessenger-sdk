@@ -8,62 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:497135257072:android:7acf64f7c6a05d76",
-        "android_client_info": {
-          "package_name": "com.yellowmessenger.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "497135257072-35c43k1v5n7s6hm9a5j1rmbc13p7dj54.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.yellowmessenger.app",
-            "certificate_hash": "EBABE01F1C2B4A552CEA19D4D8DF5A426708B27A"
-          }
-        },
-        {
-          "client_id": "497135257072-cf28u3j4o583js57dqm015cj2e3t61ld.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.yellowmessenger.app",
-            "certificate_hash": "D4C125AF2452071B5606CFB7D18463E00C58F64D"
-          }
-        },
-        {
-          "client_id": "497135257072-lskd4vopmo0hoom8ov1du6njc9j23rac.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "497135257072-mk1i9cukh806qn9eemmp39ag7bfdcc4f.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDABnHSq2GG3vgNE53_3gzY8qXzrjAhubY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "497135257072-lskd4vopmo0hoom8ov1du6njc9j23rac.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:497135257072:android:26cd47329033017f",
         "android_client_info": {
           "package_name": "com.yellowmessenger.sdk"

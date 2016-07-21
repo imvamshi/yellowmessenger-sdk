@@ -1,0 +1,149 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dots="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/chat_bg">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="1dp"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
+            android:layout_above="@+id/typing"
+            android:clipToPadding="false"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/typing"
+            android:visibility="gone"
+            android:layout_above="@+id/optionsLayoutView"
+            android:orientation="horizontal">
+
+            <com.yellowmessenger.sdk.utils.DotsTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dots"
+                android:textSize="45sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                dots:autoplay="false"
+                dots:period="1000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_above="@+id/sendBox"
+            android:id="@+id/optionsLayoutView">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:scrollbars="none"
+                android:layout_gravity="center_horizontal">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/optionsLayout"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:padding="5dp"/>
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/sendBox"
+            android:layout_above="@+id/bottomLayout"
+            android:background="@drawable/border_send">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:id="@+id/attach_layout"
+                android:onClick="selectImage">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:scaleType="fitXY"
+                    android:id="@+id/attach"
+                    android:src="@drawable/ic_attach"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sendText"
+                android:height="50dp"
+                android:hint="@string/chat_hint"
+                android:textSize="16sp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="5dp"
+                android:padding="10dp"
+                android:layout_weight="1"
+                android:typeface="serif"
+                android:background="#FFFFFF">
+            </EditText>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/sendButton"
+                android:src="@drawable/send"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:contentDescription="Send" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottomLayout"/>
+    </RelativeLayout>
+
+    <FrameLayout android:id="@+id/overlay_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</merge>
