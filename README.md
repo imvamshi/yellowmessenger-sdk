@@ -19,12 +19,14 @@ App level gradle file
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Add this line 
-	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.1.1'
+	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.1.2'
 }
 ```
 
 Android Application class
 ```java
+import com.yellowmessenger.sdk.service.YellowMessenger;
+
 public class App extends Application {
     @Override
     public void onCreate() {
@@ -52,4 +54,16 @@ Showing featured bots
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="com.yellowmessenger.sdk.fragments.DiscoverFragment"/>
+```
+
+Add this for getting a chat button for your app
+```XML
+<com.yellowmessenger.sdk.views.ChatButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/primary_color"
+        android:src="@drawable/ic_home_chat" />
 ```
