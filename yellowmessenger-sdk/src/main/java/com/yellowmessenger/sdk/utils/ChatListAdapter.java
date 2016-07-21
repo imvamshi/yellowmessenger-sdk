@@ -339,7 +339,12 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                 });
 
                 ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_name)).setText(products.get(i).getName());
-                ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setText(Html.fromHtml(products.get(i).getPrice()));
+                if(products.get(i).getPrice()!=null){
+                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setVisibility(View.VISIBLE);
+                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setText(Html.fromHtml(products.get(i).getPrice()));
+                }else{
+                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setVisibility(View.GONE);
+                }
 
                 if (products.get(i).getPriceOriginal() != null && !products.get(i).getPriceOriginal().equals(products.get(i).getPrice())) {
                     ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price_original)).setText(Html.fromHtml(products.get(i).getPriceOriginal()));
