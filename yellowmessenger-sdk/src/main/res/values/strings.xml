@@ -4,4 +4,7 @@
     <string name="featured">FEATURED</string>
     <string name="chat_hint">Start typing here</string>
     <string name="similar_products">Similar Products</string>
+    <string name="take_picture">Take picture</string>
+    <string name="choose_photos">Choose photos</string>
+    <string name="share_location">Share location</string>
 </resources>

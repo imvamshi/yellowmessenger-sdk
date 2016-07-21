@@ -1,20 +1,19 @@
 package com.yellowmessenger.sdk.events;
 
-
-import com.yellowmessenger.sdk.models.Option;
+import com.yellowmessenger.sdk.models.Action;
 
 public class SendActionEvent {
-    private Option option;
+    private Action action;
 
-    public SendActionEvent(Option action) {
-        this.option = action;
+    public SendActionEvent(Action action) {
+        this.action = action;
     }
 
-    public Option getOption() {
-        return option;
+    public Action getAction() {
+        return action;
     }
 
-    public void setOption(Option option) {
-        this.option = option;
+    public void setAction(Action action) {
+        this.action = action;
     }
 }

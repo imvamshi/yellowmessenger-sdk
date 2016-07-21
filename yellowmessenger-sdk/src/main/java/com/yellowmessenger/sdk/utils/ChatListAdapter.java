@@ -8,22 +8,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yellowmessenger.sdk.ChatActivity;
+import com.yellowmessenger.sdk.ImageActivity;
 import com.yellowmessenger.sdk.R;
 import com.yellowmessenger.sdk.ResultsActivity;
 import com.yellowmessenger.sdk.config.Urls;
 import com.yellowmessenger.sdk.events.ChatUpdatedEvent;
 import com.yellowmessenger.sdk.events.SendActionEvent;
+import com.yellowmessenger.sdk.events.SendOptionEvent;
+import com.yellowmessenger.sdk.models.Action;
 import com.yellowmessenger.sdk.models.ChatResponse;
+import com.yellowmessenger.sdk.models.MessageObject;
 import com.yellowmessenger.sdk.models.Product;
 import com.yellowmessenger.sdk.models.Question;
 import com.yellowmessenger.sdk.models.SearchResults;
@@ -46,6 +52,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
     private String name;
     private static SimpleDateFormat format = new SimpleDateFormat("HH:mm dd MMM, yyyy", Locale.getDefault());
     Gson gson = new Gson();
+    int margin42;
 
     private static class MessageViewHolder{
         TextView message;
@@ -99,7 +106,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
     }
 
     private static class SearchViewHolder{
-        View messageLayout;
         TextView message;
         TextView timestamp;
         List<View> productsLayouts = new ArrayList<>();
@@ -119,6 +125,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         this.context = context;
         this.values = values;
         this.name = name;
+        this.margin42 = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 42, context.getResources().getDisplayMetrics());
         EventBus.getDefault().post(new ChatUpdatedEvent(true));
     }
 
@@ -255,7 +262,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             questionViewHolder.actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((ChatActivity)context).sendActionEvent(new SendActionEvent(question.getAction()));
+                    ((ChatActivity)context).sendOptionEvent(new SendOptionEvent(question.getAction()));
                 }
             });
 
@@ -279,7 +286,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         if (view == null) {
             view = inflater.inflate(R.layout.chat_list_item_search, parent, false);
             searchViewHolder = new SearchViewHolder();
-            searchViewHolder.messageLayout = view.findViewById(R.id.messageLayout);
             searchViewHolder.timestamp = (TextView) view.findViewById(R.id.timestamp);
             searchViewHolder.message = (TextView) view.findViewById(R.id.message);
             for(int i = 0; i < 10; i++){
@@ -304,10 +310,10 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         searchViewHolder.scrollView.scrollTo(0,0);
         final ChatResponse chatResponse = chatMessage.getChatResponse();
         if(chatResponse.getSearchResults().getMessage()!=null){
-            searchViewHolder.messageLayout.setVisibility(View.VISIBLE);
+            searchViewHolder.message.setVisibility(View.VISIBLE);
             searchViewHolder.message.setText(chatResponse.getSearchResults().getMessage());
         }else{
-            searchViewHolder.messageLayout.setVisibility(View.GONE);
+            searchViewHolder.message.setVisibility(View.GONE);
         }
 
         int productSize = chatResponse.getSearchResults().getProducts()!=null?chatResponse.getSearchResults().getProducts().size():0;
@@ -322,15 +328,18 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             final int index = i;
             if(productSize>i){
                 searchViewHolder.productsLayouts.get(i).setVisibility(View.VISIBLE);
+
                 searchViewHolder.productsLayouts.get(i).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((ChatActivity)context).openProductView(products.get(index));
+                        if(products.get(index).getJsonUrl()!=null){
+                            ((ChatActivity)context).openProductView(products.get(index));
+                        }
                     }
                 });
+
                 ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_name)).setText(products.get(i).getName());
                 ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setText(Html.fromHtml(products.get(i).getPrice()));
-
 
                 if (products.get(i).getPriceOriginal() != null && !products.get(i).getPriceOriginal().equals(products.get(i).getPrice())) {
                     ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price_original)).setText(Html.fromHtml(products.get(i).getPriceOriginal()));
@@ -345,6 +354,62 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price_original).setVisibility(View.GONE);
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_discount).setVisibility(View.GONE);
                 }
+                if(products.get(i).getDescription()!=null){
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.VISIBLE);
+                    ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description)).setText(products.get(i).getDescription());
+                }else{
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.GONE);
+                }
+
+                TextView buttonPrimary = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button);
+                TextView buttonSecondary = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button_secondary);
+                if(products.get(i).getActions()!=null && products.get(i).getActions().size()>0){
+                    buttonPrimary.setVisibility(View.VISIBLE);
+                    buttonPrimary.setText(products.get(i).getActions().get(0).getTitle());
+                    final Action action = products.get(i).getActions().get(0);
+                    buttonPrimary.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(action.getUrl()!=null){
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(action.getUrl()));
+                                context.startActivity(i);
+                            }else{
+
+                                ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
+                            }
+                        }
+                    });
+
+                    if(products.get(i).getActions().size()>1){
+                        buttonSecondary.setVisibility(View.VISIBLE);
+                        buttonSecondary.setText(products.get(i).getActions().get(1).getTitle());
+                        final Action actionSecondary = products.get(i).getActions().get(1);
+                        buttonSecondary.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(actionSecondary.getUrl()!=null){
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setData(Uri.parse(actionSecondary.getUrl()));
+                                    context.startActivity(i);
+                                }else{
+                                    ((ChatActivity)context).sendActionEvent(new SendActionEvent(actionSecondary));
+                                }
+                            }
+                        });
+                    }else {
+                        buttonSecondary.setVisibility(View.GONE);
+                    }
+                }else{
+                    buttonPrimary.setVisibility(View.GONE);
+                    buttonSecondary.setVisibility(View.GONE);
+                }
+
+                int detailsMarginBottom = products.get(i).getActions()!=null?(products.get(i).getActions().size()>1? margin42 *2:(products.get(i).getActions().size()>1)? margin42 :0):0;
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0,0,0,detailsMarginBottom);
+                searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setLayoutParams(layoutParams);
 
                 DrawableManager.getInstance(context).fetchDrawableOnThread(products.get(i).getImage(), ((ImageView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_image)));
             }else{
@@ -359,8 +424,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             searchViewHolder.actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    ((ChatActivity)context).sendActionEvent(new SendActionEvent(chatResponse.getSearchResults().getAction()));
+                    ((ChatActivity)context).sendOptionEvent(new SendOptionEvent(chatResponse.getSearchResults().getAction()));
                 }
             });
 
@@ -569,10 +633,56 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             ownViewHolder.message.setVisibility(View.VISIBLE);
             ownViewHolder.productLayout.setVisibility(View.GONE);
 
-            ownViewHolder.productLayout.setVisibility(View.GONE);
-            ownViewHolder.message.setVisibility(View.VISIBLE);
-            ownViewHolder.timestamp.setVisibility(View.VISIBLE);
-            ownViewHolder.message.setText(Html.fromHtml(chatMessage.getMessage()));
+            MessageObject messageObject = null;
+            try{
+                messageObject = gson.fromJson(chatMessage.getMessage(), MessageObject.class);
+            }catch (Exception e){
+                //e.printStackTrace();
+            }
+
+            if(messageObject!=null && (messageObject.getMessage()!=null || messageObject.getImage()!=null)){
+                ownViewHolder.message.setVisibility(View.GONE);
+
+                String title = messageObject.getMessage();
+                if(title != null){
+                    ownViewHolder.productTitle.setText(title);
+                    ownViewHolder.productTitle.setVisibility(View.VISIBLE);
+                }else{
+                    ownViewHolder.productTitle.setVisibility(View.GONE);
+                }
+                if(messageObject.getPriceString() != null){
+                    ownViewHolder.productPrice.setText(messageObject.getPriceString());
+                    ownViewHolder.productPrice.setVisibility(View.VISIBLE);
+                }else{
+                    ownViewHolder.productPrice.setVisibility(View.GONE);
+                }
+
+                if(messageObject.getImage()!=null){
+                    ownViewHolder.productImage.setVisibility(View.VISIBLE);
+                    DrawableManager.getInstance(context).fetchDrawableOnThread(messageObject.getImage(), ownViewHolder.productImage);
+
+                    final String imageUrl = messageObject.getImage();
+                    ownViewHolder.productImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, ImageActivity.class);
+                            Bundle bundle = new Bundle();
+
+                            bundle.putStringArrayList("urls", new ArrayList<>(Collections.singletonList(imageUrl)));
+                            intent.putExtras(bundle);
+                            ((Activity) context).startActivityForResult(intent, 0);
+                        }
+                    });
+                }else{
+                    ownViewHolder.productImage.setVisibility(View.GONE);
+                }
+                ownViewHolder.productLayout.setVisibility(View.VISIBLE);
+            }else {
+                ownViewHolder.productLayout.setVisibility(View.GONE);
+                ownViewHolder.message.setVisibility(View.VISIBLE);
+                ownViewHolder.timestamp.setVisibility(View.VISIBLE);
+                ownViewHolder.message.setText(Html.fromHtml(chatMessage.getMessage()));
+            }
         }
 
         String timestampText = null;

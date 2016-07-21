@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -25,6 +26,8 @@ import com.yellowmessenger.sdk.events.MessageReceivedEvent;
 import com.yellowmessenger.sdk.events.NetworkChangeEvent;
 import com.yellowmessenger.sdk.events.SendMessageEvent;
 import com.yellowmessenger.sdk.events.TypingEvent;
+import com.yellowmessenger.sdk.events.UploadCompleteEvent;
+import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.models.ChatResponse;
 import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
@@ -41,6 +44,8 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.android.AndroidSmackInitializer;
+import org.jivesoftware.smack.extensions.ExtensionsInitializer;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -55,7 +60,9 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -215,14 +222,14 @@ public class XMPPService extends Service {
         }
     }
 
-    public void processXMPPMessage(String name, String sender, String message) {
+    public void processXMPPMessage(String sender, String name, String message) {
+        ChatMessage chatMessage = new ChatMessage(sender, message,name, false);
+        chatMessage.save();
         if (XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))
         {
-            ChatMessage chatMessage = new ChatMessage(sender, message,name, false);
-            chatMessage.save();
             EventBus.getDefault().post(new MessageReceivedEvent(chatMessage));
         } else {
-            notifyMessage(sender, message, name);
+            notifyMessage(sender, name, message);
         }
     }
 
@@ -293,6 +300,11 @@ public class XMPPService extends Service {
 
     private void createConnection() throws XmppStringprepException, NoSuchAlgorithmException {
         if (mConnection == null) {
+            AndroidSmackInitializer androidSmackInitializer = new AndroidSmackInitializer();
+            androidSmackInitializer.initialize();
+            ExtensionsInitializer extensionsInitializer= new ExtensionsInitializer();
+            extensionsInitializer.initialize();
+
             XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
             XMPPTCPConnectionConfiguration connConfig = XMPPTCPConnectionConfiguration.builder()
                     .setXmppDomain(JidCreate.domainBareFrom(DOMAIN))
@@ -372,7 +384,11 @@ public class XMPPService extends Service {
     private void notifyMessage(String sender,String name, String message){
         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        sendNotification("Yellow Messenger",message,intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("username", sender);
+        bundle.putString("name", name);
+        intent.putExtras(bundle);
+        sendNotification(PreferencesManager.getInstance(getApplicationContext()).getName()!=null?PreferencesManager.getInstance(getApplicationContext()).getName():"Yellow Messenger",message,intent);
     }
 
     private void sendNotification(String title, String message, Intent intent) {
@@ -409,6 +425,21 @@ public class XMPPService extends Service {
     @Subscribe
     public void onEvent(ChatDisconnectedEvent event) {
         username = null;
+    }
+
+    Map<String,ChatMessage> uploadMap = new HashMap<>();
+
+    @Subscribe
+    public void onEvent(UploadCompleteEvent event) {
+        ChatMessage chatMessage = uploadMap.get(event.getUploadId());
+        chatMessage.setBitmap(null);
+        EventBus.getDefault().post(new SendMessageEvent(chatMessage));
+    }
+
+    @Subscribe
+    public void onEvent(UploadStartEvent event) {
+        ChatMessage chatMessage = event.getChatMessage();
+        uploadMap.put(event.getUploadId(),chatMessage);
     }
 
 

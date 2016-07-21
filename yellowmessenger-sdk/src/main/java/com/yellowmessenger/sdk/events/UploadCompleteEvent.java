@@ -1,5 +1,8 @@
 package com.yellowmessenger.sdk.events;
 
+/**
+ * Created by kishore on 06/02/16.
+ */
 public class UploadCompleteEvent {
     String uploadId;
 

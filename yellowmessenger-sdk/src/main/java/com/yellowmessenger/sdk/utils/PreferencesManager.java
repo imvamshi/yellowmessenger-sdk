@@ -20,6 +20,7 @@ public class PreferencesManager {
 
 
     private static PreferencesManager instance;
+    private String name;
 
     public static PreferencesManager getInstance(Context context){
         if(instance == null){
@@ -60,5 +61,9 @@ public class PreferencesManager {
 
     public String getCountry(){
         return pref.getString("props-country", null);
+    }
+
+    public String getName() {
+        return pref.getString("props-name", null);
     }
 }
