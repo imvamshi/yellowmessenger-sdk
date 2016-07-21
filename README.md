@@ -25,6 +25,8 @@ dependencies {
 
 Android Application class
 ```java
+import com.yellowmessenger.sdk.service.YellowMessenger;
+
 public class App extends Application {
     @Override
     public void onCreate() {
