@@ -14,6 +14,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.yellowmessenger.sdk.ChatActivity;
 import com.yellowmessenger.sdk.R;
@@ -33,6 +40,7 @@ import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 import com.yellowmessenger.sdk.receivers.UploadReceiver;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
+import com.yellowmessenger.sdk.utils.S3Utils;
 import com.yellowmessenger.sdk.xmpp.CustomSCRAMSHA1Mechanism;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,6 +63,8 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.android.ServerPingWithAlarmManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -82,6 +92,8 @@ public class XMPPService extends Service {
 
     StanzaFilter packetFilter = new StanzaTypeFilter(Message.class);
     private String username;
+    RequestQueue queue = null;
+
     Gson gson = new Gson();
 
     // Sub classes
@@ -106,6 +118,7 @@ public class XMPPService extends Service {
         public void authenticated(XMPPConnection connection, boolean resumed) {
             // Add the jid to the cache
             Log.d(TAG, "authenticated: ");
+            fetchOfflineMessages();
             sendUnsentMessages();
         }
 
@@ -238,6 +251,7 @@ public class XMPPService extends Service {
         presence = new Presence(Presence.Type.available);
         presence.setStatus("I’m available");
         EventBus.getDefault().register(this);
+        queue = Volley.newRequestQueue(getApplicationContext());
     }
 
 
@@ -577,6 +591,37 @@ public class XMPPService extends Service {
                 EventBus.getDefault().post(new LoginEvent());
             }
             return null;
+        }
+    }
+
+
+
+    private void fetchOfflineMessages(){
+        try{
+            String url = "https://www.yellowmessenger.com/xmpp/fetchOfflineMessages?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try{
+                        if(response!=null && response.length()>0){
+                            for(int i = 0 ; i < response.length();i++){
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                processMessage(jsonObject.getString("from"),jsonObject.getString("body"));
+                            }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error1) {
+                    error1.printStackTrace();
+                }
+            });
+            queue.add(jsonObjectRequest);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
