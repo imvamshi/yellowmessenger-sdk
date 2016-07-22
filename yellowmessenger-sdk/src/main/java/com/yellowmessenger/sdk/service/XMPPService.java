@@ -118,7 +118,6 @@ public class XMPPService extends Service {
         public void authenticated(XMPPConnection connection, boolean resumed) {
             // Add the jid to the cache
             Log.d(TAG, "authenticated: ");
-            fetchOfflineMessages();
             sendUnsentMessages();
         }
 
@@ -591,37 +590,6 @@ public class XMPPService extends Service {
                 EventBus.getDefault().post(new LoginEvent());
             }
             return null;
-        }
-    }
-
-
-
-    private void fetchOfflineMessages(){
-        try{
-            String url = "https://www.yellowmessenger.com/xmpp/fetchOfflineMessages?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
-            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.POST, url, null, new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    try{
-                        if(response!=null && response.length()>0){
-                            for(int i = 0 ; i < response.length();i++){
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                processMessage(jsonObject.getString("from"),jsonObject.getString("body"));
-                            }
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error1) {
-                    error1.printStackTrace();
-                }
-            });
-            queue.add(jsonObjectRequest);
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 }
