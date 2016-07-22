@@ -38,4 +38,12 @@ public class ChatMessageDAO extends BaseDAO<ChatMessage>{
                 .orderBy("id ASC")
                 .execute();
     }
+
+    public static List<ChatMessage> findAllByUsernameAndIdGreaterThan(String username, long l) {
+        return new Select()
+                .from(ChatMessage.class)
+                .where("username = ? and id > ?", username,l)
+                .orderBy("id ASC")
+                .execute();
+    }
 }

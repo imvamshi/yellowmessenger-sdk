@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
 
         // set listeners
         setListeners();
-        init();
+        init(getIntent());
     }
 
     private void setListeners() {
@@ -216,14 +216,21 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     private String name;
     private List<ChatMessage> chatMessages;
 
-    private void init() {
+    private void init(Intent intent) {
         String oldUsername = username;
-        username = getIntent().getExtras().getString("username");
-        name = getIntent().getExtras().getString("name");
+        username = intent.getExtras().getString("username");
+        name = intent.getExtras().getString("name");
         setTitle(name);
         if (oldUsername == null || !username.equals(oldUsername)) {
             getChatHistory();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        init(intent);
     }
 
     private void getChatHistory() {
@@ -234,9 +241,16 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         chatListAdapter.notifyDataSetChanged();
     }
 
+    private void getChatNewHistory() {
+        List<ChatMessage> newChatMessages = ChatMessageDAO.findAllByUsernameAndIdGreaterThan(username,chatMessages.size()>0?chatMessages.get(chatMessages.size()-1).getId():0);
+        chatMessages.addAll(newChatMessages);
+        chatListAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        getChatNewHistory();
         EventBus.getDefault().post(new ChatConnectedEvent(username));
     }
 

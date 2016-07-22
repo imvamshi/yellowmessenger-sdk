@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.activeandroid.ActiveAndroid;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.yellowmessenger.sdk.utils.FontsOverride;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 
