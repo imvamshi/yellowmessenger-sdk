@@ -14,11 +14,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -36,11 +36,11 @@ import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadCompleteEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.models.ChatResponse;
+import com.yellowmessenger.sdk.models.Featured;
 import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 import com.yellowmessenger.sdk.receivers.UploadReceiver;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
-import com.yellowmessenger.sdk.utils.S3Utils;
 import com.yellowmessenger.sdk.xmpp.CustomSCRAMSHA1Mechanism;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,8 +69,10 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +91,10 @@ public class XMPPService extends Service {
     boolean connecting = false;
     private UploadReceiver uploadReceiver = new UploadReceiver();
     private static XMPPTCPConnection mConnection;
+    DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(
+            10000,
+            10,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     StanzaFilter packetFilter = new StanzaTypeFilter(Message.class);
     private String username;
@@ -326,7 +332,7 @@ public class XMPPService extends Service {
                     .setSecurityMode(ConnectionConfiguration.SecurityMode.ifpossible)
                     .setCustomSSLContext(SSLContext.getInstance("TLS"))
                     .setSocketFactory(SSLSocketFactory.getDefault())
-                    .setUsernameAndPassword(xmppUser.getUsername(),"")
+                    .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
             SmackConfiguration.setDefaultPacketReplyTimeout(60000);
@@ -373,7 +379,7 @@ public class XMPPService extends Service {
     private void login() {
         XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
         if(xmppUser==null){
-            createUser();
+            anonymousUserLogin();
             return;
         }
         try {
@@ -476,7 +482,7 @@ public class XMPPService extends Service {
     }
 
     // Create an anonymous account
-    private void createUser(){
+    private void anonymousUserLogin(){
         try{
             XMPPTCPConnectionConfiguration anonymousConfig = XMPPTCPConnectionConfiguration.builder()
                     .performSaslAnonymousAuthentication()
@@ -502,9 +508,8 @@ public class XMPPService extends Service {
 
                 @Override
                 public void authenticated(XMPPConnection connection, boolean resumed) {
-                    PreferencesManager.getInstance(getBaseContext()).setXMPPUser(new XMPPUser(anonymousConnection.getUser().getLocalpart().toString(),""));
                     anonymousConnection.disconnect();
-                    XMPPService.this.login();
+                    createUser(anonymousConnection.getUser().getLocalpart().toString());
                 }
 
                 @Override
@@ -591,5 +596,56 @@ public class XMPPService extends Service {
             }
             return null;
         }
+    }
+
+    private void createUser(String username){
+        try{
+            String salt = "a04aa6a74e76bf8f57b0e2e715138171";
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update((username+salt).getBytes());
+            byte byteData[] = md.digest();
+
+            //convert the byte to hex format method 1
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            String hash = sb.toString();
+
+            String url = "https://flux.yellowmessenger.com/xmpp/createUser";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username",username);
+            jsonObject.put("hash",hash);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                if (response.getBoolean("success")) {
+                                    JSONObject data = response.getJSONObject("data");
+                                    PreferencesManager.getInstance(getBaseContext()).setXMPPUser(new XMPPUser(data.getString("username"),data.getString("password")));
+                                    XMPPService.this.login();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+                    });
+
+            jsonObjectRequest.setRetryPolicy(retryPolicy);
+            queue.add(jsonObjectRequest);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
