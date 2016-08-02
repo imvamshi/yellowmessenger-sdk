@@ -112,11 +112,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
 
         HorizontalScrollView scrollView;
 
-        View actionButton;
-        TextView actionText;
-        View showAllButton;
-        TextView showAllText;
-
     }
 
     public ChatListAdapter(Context context, List<ChatMessage> values, String name) {
@@ -295,11 +290,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             }
 
             searchViewHolder.scrollView = (HorizontalScrollView) view.findViewById(R.id.scrollView);
-            searchViewHolder.actionButton = view.findViewById(R.id.action_button);
-            searchViewHolder.actionText = (TextView)view.findViewById(R.id.action_text);
-
-            searchViewHolder.showAllButton = view.findViewById(R.id.show_all_button);
-            searchViewHolder.showAllText = (TextView)view.findViewById(R.id.show_all_text);
 
             view.setTag(searchViewHolder);
         }
@@ -420,39 +410,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             }else{
                 searchViewHolder.productsLayouts.get(i).setVisibility(View.GONE);
             }
-        }
-
-        if(chatResponse.getSearchResults().getAction()!=null)
-        {
-            searchViewHolder.actionButton.setVisibility(View.VISIBLE);
-            searchViewHolder.actionText.setText(chatResponse.getSearchResults().getAction().getLabel());
-            searchViewHolder.actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((ChatActivity)context).sendOptionEvent(new SendOptionEvent(chatResponse.getSearchResults().getAction()));
-                }
-            });
-
-        }else{
-            searchViewHolder.actionButton.setVisibility(View.GONE);
-        }
-
-        if(chatResponse.getSearchResults().getNextLink()!=null){
-            searchViewHolder.showAllButton.setVisibility(View.VISIBLE);
-            final String nextLink = chatResponse.getSearchResults().getNextLink();
-            final SearchResults searchResults =chatMessage.getChatResponse().getSearchResults();
-            searchViewHolder.showAllButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ResultsActivity.class);
-                    intent.putExtra("nextLink", nextLink);
-                    intent.putExtra("searchResults", searchResults);
-                    context.startActivity(intent);
-                }
-            });
-        }else{
-            searchViewHolder.showAllButton.setVisibility(View.GONE);
-            view.setOnClickListener(null);
         }
 
         try {

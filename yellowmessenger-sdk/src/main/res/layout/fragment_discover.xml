@@ -14,12 +14,22 @@
         android:id="@+id/featured_label"
         android:typeface="serif"/>
 
-    <com.yellowmessenger.sdk.utils.FeaturedGridView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/featured_grid"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:numColumns="1"/>
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <com.yellowmessenger.sdk.utils.FeaturedGridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/featured_grid"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:numColumns="1"/>
+
+
+    </ScrollView>
+
 
 </LinearLayout>
