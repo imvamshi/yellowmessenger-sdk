@@ -593,6 +593,9 @@ public class XMPPService extends Service {
 
             if(unsent){
                 EventBus.getDefault().post(new LoginEvent());
+                Log.d(TAG,"Message not sent. Sending a login event");
+            }else{
+                Log.d(TAG,"Message sent");
             }
             return null;
         }
