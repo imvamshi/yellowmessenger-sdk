@@ -60,7 +60,7 @@ public final class UploadService extends Service {
      * Sets the namespace used to broadcast events. Set this to your app namespace to avoid
      * conflicts and unexpected behaviours.
      */
-    public static String NAMESPACE = "net.gotev";
+    public static String NAMESPACE = "com.yellowmessenger.sdk.upload";
 
     /**
      * Sets the HTTP Stack to use to perform HTTP based upload requests.

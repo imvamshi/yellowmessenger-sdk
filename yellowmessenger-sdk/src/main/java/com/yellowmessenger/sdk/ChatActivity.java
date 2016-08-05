@@ -63,6 +63,7 @@ import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.fragments.ProductFragment;
 import com.yellowmessenger.sdk.models.ChatType;
+import com.yellowmessenger.sdk.models.FieldType;
 import com.yellowmessenger.sdk.models.Option;
 import com.yellowmessenger.sdk.models.Product;
 import com.yellowmessenger.sdk.models.Question;
@@ -330,11 +331,12 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
             ChatMessage chatMessage = chatMessages.get(chatMessages.size() - 1);
             if (!chatMessage.isYou() && chatMessage.getChatType() == ChatType.QUESTION) {
                 Question question = chatMessage.getChatResponse().getQuestion();
-                //editText.setHint(question.getLabel());
-                //editText.setInputType(FieldType.getInputType(question.getFieldType()));
+                editText.setInputType(FieldType.getInputType(question.getFieldType()));
 
-                if (question.getOptions() != null && question.getOptions().size() > 0) {
+                if (question.getOptions() != null && question.getOptions().size() > 0 && !question.isPersistentOptions()) {
                     addOptions(question);
+                }else{
+                    optionsLayout.removeAllViews();
                 }
             } else {
                 optionsLayout.removeAllViews();

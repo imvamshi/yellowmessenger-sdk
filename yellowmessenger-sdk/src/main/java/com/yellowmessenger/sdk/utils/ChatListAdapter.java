@@ -163,7 +163,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         }
         try {
             String markers = "color:red%7Clabel:A%7C"+ chatMessage.getChatResponse().getLocation().getLat() + "," + chatMessage.getChatResponse().getLocation().getLng();
-            String url = "http://maps.google.com/maps/api/staticmap?center=" + chatMessage.getChatResponse().getLocation().getLat() + "," + chatMessage.getChatResponse().getLocation().getLng()+"&scale=2&markers="+ markers+ "&zoom=15&size=280x140&sensor=false&&key="+ Urls.API_KEY;
+            String url = "http://maps.google.com/maps/api/staticmap?center=" + chatMessage.getChatResponse().getLocation().getLat() + "," + chatMessage.getChatResponse().getLocation().getLng()+"&scale=2&markers="+ markers+ "&zoom=15&size=280x140&sensor=false";
             DrawableManager.getInstance(getContext()).fetchDrawableOnThread(url,locationViewHolder.mapView);
             String timestamp = DateUtils.getRelativeTimeSpanString(format.parse(values.get(position).getTimestamp()).getTime(),(new Date()).getTime(),DateUtils.FORMAT_ABBREV_RELATIVE).toString()+" - "+(chatMessage.getAcknowledged()?"Sent":"Sending..");
             locationViewHolder.timestamp.setText(timestamp);
@@ -237,7 +237,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         final ChatMessage chatMessage = values.get(position);
         QuestionViewHolder questionViewHolder = null;
         if (view == null) {
-                view = inflater.inflate(R.layout.chat_list_item, parent, false);
+                view = inflater.inflate(R.layout.chat_list_item_question, parent, false);
             questionViewHolder = new QuestionViewHolder();
             questionViewHolder.message = (TextView) view.findViewById(R.id.message);
             questionViewHolder.timestamp = (TextView) view.findViewById(R.id.timestamp);

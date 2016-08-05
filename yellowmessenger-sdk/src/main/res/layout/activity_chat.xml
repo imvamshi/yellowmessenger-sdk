@@ -16,7 +16,7 @@
             android:dividerHeight="1dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll"
-            android:paddingBottom="5dp"
+            android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:layout_above="@+id/typing"
             android:clipToPadding="false"/>
@@ -38,7 +38,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="5dp"
                 dots:autoplay="false"
                 dots:period="1000"/>
 

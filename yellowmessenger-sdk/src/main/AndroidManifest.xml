@@ -22,7 +22,7 @@
         </activity>
 
         <service android:enabled="true" android:name="com.yellowmessenger.sdk.service.XMPPService" />
-        <service android:name="upload.UploadService" android:enabled="true" />
+        <service android:name="com.yellowmessenger.sdk.upload.UploadService" android:enabled="true" />
 
         <receiver android:name="com.yellowmessenger.sdk.receivers.NetworkStateReceiver">
             <intent-filter>

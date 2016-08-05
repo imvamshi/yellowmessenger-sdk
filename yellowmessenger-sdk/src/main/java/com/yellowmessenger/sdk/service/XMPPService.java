@@ -485,6 +485,7 @@ public class XMPPService extends Service {
         }
     }
 
+
     // Create an anonymous account
     private void anonymousUserLogin(){
         try{
@@ -497,7 +498,7 @@ public class XMPPService extends Service {
                     .setCustomSSLContext(SSLContext.getInstance("TLS"))
                     .setSocketFactory(SSLSocketFactory.getDefault())
                     .build();
-            final XMPPTCPConnection anonymousConnection = new XMPPTCPConnection(anonymousConfig);
+            final XMPPTCPConnection anonymousConnection  = new XMPPTCPConnection(anonymousConfig);
             anonymousConnection.addConnectionListener(new ConnectionListener() {
                 @Override
                 public void connected(XMPPConnection connection) {
@@ -512,8 +513,8 @@ public class XMPPService extends Service {
 
                 @Override
                 public void authenticated(XMPPConnection connection, boolean resumed) {
-                    anonymousConnection.disconnect();
                     createUser(anonymousConnection.getUser().getLocalpart().toString());
+                    anonymousConnection.disconnect();
                 }
 
                 @Override
@@ -648,8 +649,6 @@ public class XMPPService extends Service {
 
             jsonObjectRequest.setRetryPolicy(retryPolicy);
             queue.add(jsonObjectRequest);
-
-
         }catch (Exception e){
             e.printStackTrace();
         }

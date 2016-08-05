@@ -23,6 +23,7 @@ public class Question implements Serializable{
     private boolean autoComplete = false;
     private List<Option> filteredOptions;
     private boolean allowMultipleOptions = false;
+    private boolean persistentOptions = false;
 
     public boolean isAllowMultipleOptions() {
         return allowMultipleOptions;
@@ -200,5 +201,13 @@ public class Question implements Serializable{
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public boolean isPersistentOptions() {
+        return persistentOptions;
+    }
+
+    public void setPersistentOptions(boolean persistentOptions) {
+        this.persistentOptions = persistentOptions;
     }
 }
