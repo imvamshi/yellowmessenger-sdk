@@ -36,7 +36,6 @@ import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadCompleteEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.models.ChatResponse;
-import com.yellowmessenger.sdk.models.Featured;
 import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 import com.yellowmessenger.sdk.receivers.UploadReceiver;
@@ -186,6 +185,8 @@ public class XMPPService extends Service {
         }
     };
 
+
+
     public void sendUnsentMessages() {
         try {
             List<ChatMessage> unsentMessages = ChatMessageDAO.getUnsentMessages();
@@ -219,6 +220,7 @@ public class XMPPService extends Service {
             if(chatResponse.getTyping()!=null){
                 if (XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))
                 {
+                    Log.d("Event posting: ",message);
                     EventBus.getDefault().post(new TypingEvent(sender, chatResponse.getTyping()));
                 }
             }
@@ -228,6 +230,7 @@ public class XMPPService extends Service {
                 chatMessage.save();
                 if (XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))
                 {
+                    Log.d("Event posting: ",message);
                     EventBus.getDefault().post(new MessageReceivedEvent(chatMessage));
                 }
             }
@@ -245,6 +248,7 @@ public class XMPPService extends Service {
         chatMessage.save();
         if (XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))
         {
+            Log.d("Event posting: ",message);
             EventBus.getDefault().post(new MessageReceivedEvent(chatMessage));
         } else {
             notifyMessage(sender, name, message);

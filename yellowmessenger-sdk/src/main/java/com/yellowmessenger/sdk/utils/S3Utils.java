@@ -11,8 +11,8 @@ import android.util.Log;
 
 
 import com.yellowmessenger.sdk.models.XMPPUser;
+import com.yellowmessenger.sdk.upload.MultipartUploadRequest;
 
-import net.gotev.uploadservice.MultipartUploadRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

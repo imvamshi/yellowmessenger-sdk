@@ -59,6 +59,7 @@ import com.yellowmessenger.sdk.events.MessageReceivedEvent;
 import com.yellowmessenger.sdk.events.SendActionEvent;
 import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.events.SendMessageEvent;
+import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.fragments.ProductFragment;
 import com.yellowmessenger.sdk.models.ChatType;
@@ -67,6 +68,7 @@ import com.yellowmessenger.sdk.models.Product;
 import com.yellowmessenger.sdk.models.Question;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 import com.yellowmessenger.sdk.utils.ChatListAdapter;
+import com.yellowmessenger.sdk.utils.DotsTextView;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.utils.S3Utils;
 
@@ -108,6 +110,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     int size15;
     int elevation;
     boolean listViewMoving = false;
+    DotsTextView dots;
 
     public void sendMessage(View view) {
         String message = editText.getText().toString();
@@ -121,6 +124,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     }
 
     public void addMessage(final ChatMessage chatMessage) {
+        Log.d("Messages received",chatMessage.getMessage());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -148,7 +152,11 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         size15 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 15, getResources().getDisplayMetrics());
         elevation = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 2, getResources().getDisplayMetrics());
         optionsLayout = (ViewGroup) findViewById(R.id.optionsLayout);
+        //View optionsLayoutView =  findViewById(R.id.optionsLayoutView);
+        //optionsLayoutView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
+        //listView.addFooterView(optionsLayoutView);
         queue = Volley.newRequestQueue(ChatActivity.this);
+        dots = (DotsTextView) findViewById(R.id.dots);
 
         if(mGoogleApiClient==null){
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -207,9 +215,30 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
+                setTyping(false);
             }
         });
+    }
+
+    @Subscribe
+    public void onEvent(TypingEvent event) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setTyping(true);
+            }
+        });
+    }
+
+    private void setTyping(boolean typing){
+        if(typing)
+        {
+            findViewById(R.id.typing).setVisibility(View.VISIBLE);
+            dots.start();
+        }else{
+            dots.stop();
+            findViewById(R.id.typing).setVisibility(View.GONE);
+        }
     }
 
     private String username;
@@ -242,9 +271,21 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     }
 
     private void getChatNewHistory() {
-        List<ChatMessage> newChatMessages = ChatMessageDAO.findAllByUsernameAndIdGreaterThan(username,chatMessages.size()>0?chatMessages.get(chatMessages.size()-1).getId():0);
+        List<ChatMessage> newChatMessages = ChatMessageDAO.findAllByUsernameAndIdGreaterThan(username,getLastId());
         chatMessages.addAll(newChatMessages);
         chatListAdapter.notifyDataSetChanged();
+    }
+
+    private long getLastId(){
+        if(chatMessages.size()>0){
+            for(int i =chatMessages.size()-1; i>=0; i-- ){
+                if(chatMessages.get(i).getId()!=null){
+                    return chatMessages.get(i).getId();
+                }
+            }
+        }
+
+        return 0;
     }
 
     @Override
@@ -384,7 +425,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     //
     public TextView createOptionButton(String text, View.OnClickListener onClickListener) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins(margin5, 0, margin5, margin5);
+        layoutParams.setMargins(margin5, 0, margin5, margin2);
         TextView optionButton = new TextView(this);
         optionButton.setPadding(padding20, padding10, padding20, padding10);
         optionButton.setGravity(Gravity.CENTER);

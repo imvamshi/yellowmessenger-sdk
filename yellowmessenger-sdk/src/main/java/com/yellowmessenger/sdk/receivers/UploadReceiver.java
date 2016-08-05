@@ -1,9 +1,9 @@
 package com.yellowmessenger.sdk.receivers;
 import com.yellowmessenger.sdk.events.UploadCompleteEvent;
+import com.yellowmessenger.sdk.upload.ServerResponse;
+import com.yellowmessenger.sdk.upload.UploadInfo;
+import com.yellowmessenger.sdk.upload.UploadServiceBroadcastReceiver;
 
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 
