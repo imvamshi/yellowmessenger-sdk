@@ -412,7 +412,8 @@ public class XMPPService extends Service {
         bundle.putString("username", sender);
         bundle.putString("name", name);
         intent.putExtras(bundle);
-        sendNotification(PreferencesManager.getInstance(getApplicationContext()).getName()!=null?PreferencesManager.getInstance(getApplicationContext()).getName():"Yellow Messenger",message,intent);
+        //String customerName = PreferencesManager.getInstance(getApplicationContext()).getName()!=null?PreferencesManager.getInstance(getApplicationContext()).getName():"Yellow Messenger";
+        sendNotification(name,message,intent);
     }
 
     private void sendNotification(String title, String message, Intent intent) {
