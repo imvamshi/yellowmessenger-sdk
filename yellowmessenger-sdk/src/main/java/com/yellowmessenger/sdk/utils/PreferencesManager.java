@@ -55,6 +55,15 @@ public class PreferencesManager {
         editor.commit();
     }
 
+    public void setBusinessName(String username,String name){
+        editor.putString("name-"+username,name);
+        editor.commit();
+    }
+
+    public String getBusinessName(String username){
+        return pref.getString("name-"+username, username);
+    }
+
     public String getAccount(){
         return pref.getString("props-account", null);
     }

@@ -249,6 +249,8 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         String oldUsername = username;
         username = intent.getExtras().getString("username");
         name = intent.getExtras().getString("name");
+        // Save the name
+        PreferencesManager.getInstance(getApplicationContext()).setBusinessName(username,name);
         setTitle(name);
         if (oldUsername == null || !username.equals(oldUsername)) {
             getChatHistory();

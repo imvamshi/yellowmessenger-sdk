@@ -209,6 +209,7 @@ public class XMPPService extends Service {
     }
 
     private void processMessage(String sender,String message){
+        String name = PreferencesManager.getInstance(getApplicationContext()).getBusinessName(sender);
         ChatResponse chatResponse = null;
         try{
             chatResponse = gson.fromJson(message, ChatResponse.class);
@@ -236,10 +237,10 @@ public class XMPPService extends Service {
             }
 
             if (chatResponse.getTyping() == null && !(XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))) {
-                notifyMessage(sender,sender,"...");
+                notifyMessage(sender,name,"...");
             }
         }else {
-            processXMPPMessage(sender, sender, message);
+            processXMPPMessage(sender, name, message);
         }
     }
 
