@@ -38,7 +38,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="2dp"
                 dots:autoplay="false"
                 dots:period="1000"/>
 
