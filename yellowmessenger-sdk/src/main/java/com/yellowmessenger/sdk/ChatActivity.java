@@ -125,7 +125,6 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     }
 
     public void addMessage(final ChatMessage chatMessage) {
-        Log.d("Messages received",chatMessage.getMessage());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.TypedValue;
@@ -30,6 +31,7 @@ import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.models.Action;
 import com.yellowmessenger.sdk.models.ChatResponse;
 import com.yellowmessenger.sdk.models.MessageObject;
+import com.yellowmessenger.sdk.models.Option;
 import com.yellowmessenger.sdk.models.Product;
 import com.yellowmessenger.sdk.models.Question;
 import com.yellowmessenger.sdk.models.SearchResults;
@@ -64,6 +66,8 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         TextView timestamp;
         View actionButton;
         TextView actionText;
+
+        List<View> persistentOptions = new ArrayList<>();
     }
 
     private static class DeepLinkViewHolder{
@@ -243,6 +247,13 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             questionViewHolder.timestamp = (TextView) view.findViewById(R.id.timestamp);
             questionViewHolder.actionButton = view.findViewById(R.id.action_button);
             questionViewHolder.actionText = (TextView)view.findViewById(R.id.action_text);
+
+            for(int i = 0; i < 10; i++){
+                View optionView = inflater.inflate(R.layout.options_view, parent, false);
+                ((ViewGroup)view.findViewById(R.id.persistentOptions)).addView(optionView);
+                questionViewHolder.persistentOptions.add(optionView);
+            }
+
             view.setTag(questionViewHolder);
         } else {
             questionViewHolder = (QuestionViewHolder) view.getTag();
@@ -264,6 +275,41 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         }else{
             questionViewHolder.actionButton.setVisibility(View.GONE);
         }
+
+        for(View optionView : questionViewHolder.persistentOptions){
+            optionView.setVisibility(View.GONE);
+            optionView.findViewById(R.id.button_1).setVisibility(View.GONE);
+            optionView.findViewById(R.id.button_2).setVisibility(View.GONE);
+            optionView.findViewById(R.id.button_3).setVisibility(View.GONE);
+        }
+
+        if(question.isPersistentOptions() && question.getOptions()!=null && question.getOptions().size()>0){
+            for(int i = 0 ; i < question.getOptions().size();i++){
+                View optionView = questionViewHolder.persistentOptions.get(i / 3);
+                optionView.setVisibility(View.VISIBLE);
+                int buttonNumber = i % 3;
+                TextView button = null;
+                if(buttonNumber == 0 ){
+                    button = (TextView) optionView.findViewById(R.id.button_1);
+                }else
+                if(buttonNumber == 1){
+                    button = (TextView) optionView.findViewById(R.id.button_2);
+                }else{
+                    button = (TextView) optionView.findViewById(R.id.button_3);
+                }
+                final Option option = question.getOptions().get(i);
+                button.setVisibility(View.VISIBLE);
+                button.setText(question.getOptions().get(i).getLabel());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((ChatActivity)context).sendOptionEvent(new SendOptionEvent(option));
+                    }
+                });
+            }
+        }
+
+
 
         try {
             questionViewHolder.timestamp.setText(DateUtils.getRelativeTimeSpanString(format.parse(values.get(position).getTimestamp()).getTime(),(new Date()).getTime(),DateUtils.FORMAT_ABBREV_RELATIVE).toString());
