@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -301,7 +302,10 @@ public class XMPPService extends Service {
         boolean reconnect;
 
         XMPPLoginAsyncTask() {
-            this.reconnect = reconnect;
+            this.reconnect = false;
+        }
+        XMPPLoginAsyncTask(boolean close) {
+            this.reconnect = close;
         }
 
         @Override
@@ -312,6 +316,9 @@ public class XMPPService extends Service {
         @Override
         protected Void doInBackground(String... params) {
             Log.d(TAG, "Logging in...");
+            if(mConnection!=null && reconnect){
+                mConnection.disconnect();
+            }
             XMPPService.this.login();
             return null;
         }
@@ -471,9 +478,9 @@ public class XMPPService extends Service {
     @Subscribe
     public void onEvent(LoginEvent event) {
         Log.d(TAG,"Login event received");
-        if (mConnection == null || !mConnection.isConnected() || !mConnection.isAuthenticated()) {
+        if (mConnection == null || !mConnection.isConnected() || !mConnection.isAuthenticated() || event.isClose()) {
             if (!connecting) {
-                new XMPPLoginAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new XMPPLoginAsyncTask(event.isClose()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }
     }
@@ -553,7 +560,7 @@ public class XMPPService extends Service {
     }
 
 
-    class SendMessageAsyncTask extends AsyncTask<String, Void, Void> {
+    class SendMessageAsyncTask extends AsyncTask<String, Void, Map> {
 
         SendMessageEvent event;
 
@@ -562,7 +569,7 @@ public class XMPPService extends Service {
         }
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Map doInBackground(String... params) {
 
             boolean unsent = false;
             if(mConnection==null || !mConnection.isConnected() || !mConnection.isAuthenticated()){
@@ -603,8 +610,37 @@ public class XMPPService extends Service {
                 Log.d(TAG,"Message not sent. Sending a login event");
             }else{
                 Log.d(TAG,"Message sent");
+                // Look for acknowledgement and disconnect if possible
             }
-            return null;
+            Map<String,Object> map = new HashMap<>();
+            map.put("unsent",unsent);
+            map.put("stanzaId",chatMessage.getStanzaId());
+            return map;
+        }
+
+        @Override
+        protected void onPostExecute(Map map) {
+            if(!(Boolean)map.get("unsent")){
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),5000);
+            }
+        }
+    }
+
+    private class AckRunnable implements Runnable{
+        String stanzaId;
+
+        public AckRunnable(String stanzaId) {
+            this.stanzaId = stanzaId;
+        }
+
+        @Override
+        public void run() {
+            ChatMessage chatMessage = ChatMessageDAO.getChatMessageByStanzaId(stanzaId);
+            if(!chatMessage.getAcknowledged()){
+                if(!connecting){
+                    EventBus.getDefault().post(new LoginEvent(true));
+                }
+            }
         }
     }
 
