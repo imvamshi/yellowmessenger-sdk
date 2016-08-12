@@ -347,7 +347,7 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(60000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(5000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
