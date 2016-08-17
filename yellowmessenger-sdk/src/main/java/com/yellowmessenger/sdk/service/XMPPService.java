@@ -47,6 +47,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.ExceptionCallback;
+import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
@@ -62,6 +64,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.android.ServerPingWithAlarmManager;
+import org.jivesoftware.smackx.ping.packet.Ping;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -182,6 +185,19 @@ public class XMPPService extends Service {
                         processMessage(sender.getLocalpartOrNull().toString(),message.getBody());
                     }
                 }
+            }
+        }
+    };
+    StanzaFilter pingPacketFilter = new StanzaTypeFilter(Ping.class);
+
+
+    StanzaListener pingPacketListener = new StanzaListener() {
+        @Override
+        public void processPacket(Stanza stanza) throws SmackException.NotConnectedException {
+            try{
+                mConnection.sendStanza(((Ping) stanza).getPong());
+            }catch (Exception e){
+
             }
         }
     };
@@ -347,18 +363,19 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(5000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(4000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(60000);
+            mConnection.setPacketReplyTimeout(4000);
             mConnection.setPreferredResumptionTime(120);
 
             mConnection.setUseStreamManagement(true);
             mConnection.setUseStreamManagementResumption(true);
             mConnection.addAsyncStanzaListener(packetListener, packetFilter);
+            mConnection.addAsyncStanzaListener(pingPacketListener, pingPacketFilter);
             mConnection.addStanzaAcknowledgedListener(new StanzaListener(){
 
                 @Override
@@ -373,11 +390,13 @@ public class XMPPService extends Service {
                 }
             });
 
+
             SASLAuthentication.unregisterSASLMechanism("org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism");
             SASLAuthentication.registerSASLMechanism(new CustomSCRAMSHA1Mechanism());
 
             mConnection.addConnectionListener(connectionListener);
             ServerPingWithAlarmManager.getInstanceFor(mConnection).setEnabled(true);
+            // ReconnectionManager.getInstanceFor(mConnection).enableAutomaticReconnection();
         }
         try{
             if (!mConnection.isConnected() && !mConnection.isAuthenticated()) {
@@ -636,7 +655,7 @@ public class XMPPService extends Service {
         @Override
         public void run() {
             ChatMessage chatMessage = ChatMessageDAO.getChatMessageByStanzaId(stanzaId);
-            if(!chatMessage.getAcknowledged()){
+            if(!chatMessage.getAcknowledged() && isOnline()){
                 if(!connecting){
                     EventBus.getDefault().post(new LoginEvent(true));
                 }
