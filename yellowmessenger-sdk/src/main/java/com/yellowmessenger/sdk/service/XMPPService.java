@@ -363,13 +363,13 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(4000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(10000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(4000);
+            mConnection.setPacketReplyTimeout(10000);
             mConnection.setPreferredResumptionTime(120);
 
             mConnection.setUseStreamManagement(true);
@@ -410,7 +410,7 @@ public class XMPPService extends Service {
     private void login() {
         XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
         if(xmppUser==null){
-            anonymousUserLogin();
+            if(!creatingUser) anonymousUserLogin();
             return;
         }
         try {
@@ -535,6 +535,9 @@ public class XMPPService extends Service {
                             anonymousConnection.login();
                         }
                     }catch (Exception e){
+                        if(anonymousConnection.getUser()!=null){
+                            createUser(anonymousConnection.getUser().getLocalpart().toString());
+                        }
                         e.printStackTrace();
                     }
                 }
@@ -662,9 +665,10 @@ public class XMPPService extends Service {
             }
         }
     }
-
+    boolean creatingUser = false;
     private void createUser(String username){
         try{
+            creatingUser = true;
             String salt = "a04aa6a74e76bf8f57b0e2e715138171";
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update((username+salt).getBytes());
@@ -690,6 +694,7 @@ public class XMPPService extends Service {
                                 if (response.getBoolean("success")) {
                                     JSONObject data = response.getJSONObject("data");
                                     PreferencesManager.getInstance(getBaseContext()).setXMPPUser(new XMPPUser(data.getString("username"),data.getString("password")));
+                                    creatingUser = false;
                                     XMPPService.this.login();
                                 }
                             } catch (Exception e) {
