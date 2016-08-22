@@ -408,11 +408,16 @@ public class XMPPService extends Service {
     }
 
     private void login() {
-        XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
-        if(xmppUser==null){
-            if(!creatingUser) anonymousUserLogin();
+        if(!creatingUser ){
+            XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
+            if(xmppUser==null){
+                anonymousUserLogin();
+                return;
+            }
+        }else{
             return;
         }
+
         try {
             createConnection();
         } catch (Exception e) {
