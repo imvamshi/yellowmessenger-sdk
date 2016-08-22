@@ -12,7 +12,7 @@
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDo0oSn2fJjj3M4bH3kUn1FH8FyGVKDm14" />
 
         <activity
-            android:theme="@style/AppTheme"
+            android:theme="@style/YellowMessengerAppTheme"
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:launchMode="singleTop"
