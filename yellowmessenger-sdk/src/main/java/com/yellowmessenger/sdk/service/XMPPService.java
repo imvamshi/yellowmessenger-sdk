@@ -127,6 +127,11 @@ public class XMPPService extends Service {
         public void authenticated(XMPPConnection connection, boolean resumed) {
             // Add the jid to the cache
             Log.d(TAG, "authenticated: ");
+            try{
+                mConnection.sendStanza(presence);
+            }catch (Exception e){
+
+            }
             sendUnsentMessages();
         }
 
@@ -722,5 +727,10 @@ public class XMPPService extends Service {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        startService(new Intent(getApplicationContext(), XMPPService.class));
     }
 }
