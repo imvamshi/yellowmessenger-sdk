@@ -9,4 +9,6 @@
     <color name="offer_color">#ff5c6e</color>
     <color name="chat_background_color">#dd35455c</color>
 
+    <color name="colorPrimary">#35455C</color>
+    <color name="colorPrimaryDark">#dd35455c</color>
 </resources>
