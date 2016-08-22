@@ -696,7 +696,7 @@ public class XMPPService extends Service {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                if (response.getBoolean("success")) {
+                                if (response.getBoolean("success") && PreferencesManager.getInstance(getBaseContext()).getXMPPUser()==null) {
                                     JSONObject data = response.getJSONObject("data");
                                     PreferencesManager.getInstance(getBaseContext()).setXMPPUser(new XMPPUser(data.getString("username"),data.getString("password")));
                                     creatingUser = false;
@@ -715,7 +715,9 @@ public class XMPPService extends Service {
                     });
 
             jsonObjectRequest.setRetryPolicy(retryPolicy);
-            queue.add(jsonObjectRequest);
+            if(PreferencesManager.getInstance(getBaseContext()).getXMPPUser()==null){
+                queue.add(jsonObjectRequest);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
