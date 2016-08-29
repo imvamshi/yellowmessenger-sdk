@@ -137,6 +137,13 @@ public class XMPPService extends Service {
 
         @Override
         public void connectionClosed() {
+            try{
+                if(!mConnection.isConnected() && isOnline()){
+                    mConnection.connect();
+                }
+            }catch (Exception ex){
+                //ex.printStackTrace();
+            }
             Log.d(TAG,"connection closed");
         }
 
