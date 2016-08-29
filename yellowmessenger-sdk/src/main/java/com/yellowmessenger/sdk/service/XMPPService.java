@@ -368,13 +368,13 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(10000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(5000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(10000);
+            mConnection.setPacketReplyTimeout(5000);
             mConnection.setPreferredResumptionTime(120);
 
             mConnection.setUseStreamManagement(true);
