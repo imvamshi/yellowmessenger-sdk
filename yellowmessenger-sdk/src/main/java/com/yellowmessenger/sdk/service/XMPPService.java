@@ -375,7 +375,7 @@ public class XMPPService extends Service {
 
             mConnection = new XMPPTCPConnection(connConfig);
             mConnection.setPacketReplyTimeout(5000);
-            mConnection.setPreferredResumptionTime(120);
+            mConnection.setPreferredResumptionTime(10);
 
             mConnection.setUseStreamManagement(true);
             mConnection.setUseStreamManagementResumption(true);
