@@ -175,7 +175,7 @@ public class XMPPService extends Service {
         @Override
         public void reconnectingIn(int seconds) {
             XMPPService.this.connecting = true;
-            Log.d(TAG,"Reconnecting...");
+            Log.d(TAG,"Reconnecting in "+seconds);
         }
 
         @Override
