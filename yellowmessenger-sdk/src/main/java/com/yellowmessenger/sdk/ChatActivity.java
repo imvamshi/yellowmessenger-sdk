@@ -656,7 +656,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     RequestQueue queue = null;
     public void fetchUploadUrl(final String filePath, final String filename){
         try{
-            String url = "https://yellowmessenger.com/api/getPolicyParams?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
+            String url = "https://api.botplatform.io/api/getPolicyParams?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(), new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {

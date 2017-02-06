@@ -1,7 +1,7 @@
 package com.yellowmessenger.sdk.config;
 
 public class Urls {
-    public static final String API_HOST = "https://www.yellowmessenger.com";
+    public static final String API_HOST = "https://api.botplatform.io";
 
     public static final String PUT_USER_PREFERENCE = "/api/putUserPreference";
     public static final String CONNECT_SOCIAL = "/api/connectSocial";

@@ -73,7 +73,7 @@ public class DiscoverFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String url = "https://corona.yellowmessenger.com/settings";
+        String url = "https://corona.botplatform.io/settings";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
         new Response.Listener<JSONObject>() {
             @Override

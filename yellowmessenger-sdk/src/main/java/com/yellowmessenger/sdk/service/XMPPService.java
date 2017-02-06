@@ -699,7 +699,7 @@ public class XMPPService extends Service {
 
             String hash = sb.toString();
 
-            String url = "https://flux.yellowmessenger.com/xmpp/createUser";
+            String url = "https://flux.botplatform.io/xmpp/createUser";
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username",username);
             jsonObject.put("hash",hash);
