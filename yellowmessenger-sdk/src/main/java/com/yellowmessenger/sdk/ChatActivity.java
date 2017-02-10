@@ -268,7 +268,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         chatMessages.clear();
         List<ChatMessage> newChatMessages = ChatMessageDAO.findAllByUsername(username, 200, 0);
         if(newChatMessages.size()==0){
-            ChatMessage chatMessage = new ChatMessage(username, "hi", name, true);
+            ChatMessage chatMessage = new ChatMessage(username, "GET_STARTED", name, true);
             EventBus.getDefault().post(new SendMessageEvent(chatMessage));
         }
         Collections.reverse(newChatMessages);
