@@ -47,6 +47,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.View.GONE;
+
 public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
     private Context context;
     private static LayoutInflater inflater;
@@ -138,7 +140,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             case 2:
                 return getProductView(position, convertView, parent);
             case 3:
-                return getSearchView(position, convertView, parent,true);
+                return getSearchView(position, convertView, parent,false);
             case 4:
                 return getQuestionView(position, convertView, parent);
             case 5:
@@ -273,14 +275,14 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             });
 
         }else{
-            questionViewHolder.actionButton.setVisibility(View.GONE);
+            questionViewHolder.actionButton.setVisibility(GONE);
         }
 
         for(View optionView : questionViewHolder.persistentOptions){
-            optionView.setVisibility(View.GONE);
-            optionView.findViewById(R.id.button_1).setVisibility(View.GONE);
-            optionView.findViewById(R.id.button_2).setVisibility(View.GONE);
-            optionView.findViewById(R.id.button_3).setVisibility(View.GONE);
+            optionView.setVisibility(GONE);
+            optionView.findViewById(R.id.button_1).setVisibility(GONE);
+            optionView.findViewById(R.id.button_2).setVisibility(GONE);
+            optionView.findViewById(R.id.button_3).setVisibility(GONE);
         }
 
         if(question.isPersistentOptions() && question.getOptions()!=null && question.getOptions().size()>0){
@@ -349,14 +351,14 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             searchViewHolder.message.setVisibility(View.VISIBLE);
             searchViewHolder.message.setText(chatResponse.getSearchResults().getMessage());
         }else{
-            searchViewHolder.message.setVisibility(View.GONE);
+            searchViewHolder.message.setVisibility(GONE);
         }
 
         int productSize = chatResponse.getSearchResults().getProducts()!=null?chatResponse.getSearchResults().getProducts().size():0;
         final List<Product> products = chatResponse.getSearchResults().getProducts();
         if(productSize == 0){
             for(int i =0; i < 10; i++){
-                searchViewHolder.productsLayouts.get(i).setVisibility(View.GONE);
+                searchViewHolder.productsLayouts.get(i).setVisibility(GONE);
             }
         }
 
@@ -379,7 +381,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price).setVisibility(View.VISIBLE);
                     ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price)).setText(Html.fromHtml(products.get(i).getPrice()));
                 }else{
-                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price).setVisibility(View.GONE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price).setVisibility(GONE);
                 }
 
                 if (products.get(i).getPriceOriginal() != null && !products.get(i).getPriceOriginal().equals(products.get(i).getPrice())) {
@@ -392,58 +394,138 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                         searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_discount).setVisibility(View.VISIBLE);
                     }
                 } else {
-                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price_original).setVisibility(View.GONE);
-                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_discount).setVisibility(View.GONE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_price_original).setVisibility(GONE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_discount).setVisibility(GONE);
                 }
                 if(products.get(i).getDescription()!=null){
                     searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.VISIBLE);
                     ((TextView)searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description)).setText(Html.fromHtml(products.get(i).getDescription()));
                 }else{
-                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(View.GONE);
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_description).setVisibility(GONE);
                 }
 
                 TextView buttonPrimary = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button);
                 TextView buttonSecondary = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button_secondary);
-                if(products.get(i).getActions()!=null && products.get(i).getActions().size()>0){
-                    buttonPrimary.setVisibility(View.VISIBLE);
-                    buttonPrimary.setText(products.get(i).getActions().get(0).getTitle());
-                    final Action action = products.get(i).getActions().get(0);
-                    buttonPrimary.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(action.getUrl()!=null){
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(action.getUrl()));
-                                context.startActivity(i);
-                            }else{
 
-                                ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
+                TextView button1 = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button_1);
+                TextView button2 = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button_2);
+                TextView button3 = (TextView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_action_button_3);
+
+                searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setVisibility(View.VISIBLE);
+
+                if(products.get(i).getActions()!=null && products.get(i).getActions().size()>0){
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setVisibility(View.GONE);
+                    if(products.get(i).getActions().size()>2 || chatResponse.getSearchResults().isSelection()){
+                        button1.setVisibility(View.GONE);
+                        button2.setVisibility(View.GONE);
+                        button3.setVisibility(View.GONE);
+
+
+                        for(int x = 0 ; x < products.get(i).getActions().size(); x++){
+                            final Action action =  products.get(i).getActions().get(x);
+                            switch (x){
+                                case 0:
+                                    button1.setVisibility(View.VISIBLE);
+                                    button1.setText(action.getTitle());
+                                    button1.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(action.getUrl()!=null){
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse(action.getUrl()));
+                                                context.startActivity(i);
+                                            }else{
+                                                ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
+                                            }
+                                        }
+                                    });
+                                    break;
+                                case 1:
+                                    button2.setVisibility(View.VISIBLE);
+                                    button2.setText(action.getTitle());
+                                    button2.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(action.getUrl()!=null){
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse(action.getUrl()));
+                                                context.startActivity(i);
+                                            }else{
+                                                ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
+                                            }
+                                        }
+                                    });
+                                    break;
+                                case 2:
+                                    button3.setVisibility(View.VISIBLE);
+                                    button3.setText(action.getTitle());
+                                    button3.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(action.getUrl()!=null){
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse(action.getUrl()));
+                                                context.startActivity(i);
+                                            }else{
+                                                ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
+                                            }
+                                        }
+                                    });
+                                    break;
+                            }
+
+                            if(x==2){
+                                break;
                             }
                         }
-                    });
+                        buttonPrimary.setVisibility(GONE);
+                        buttonSecondary.setVisibility(GONE);
+                    }
+                    else{
+                        button1.setVisibility(View.GONE);
+                        button2.setVisibility(View.GONE);
+                        button3.setVisibility(View.GONE);
 
-                    if(products.get(i).getActions().size()>1){
-                        buttonSecondary.setVisibility(View.VISIBLE);
-                        buttonSecondary.setText(products.get(i).getActions().get(1).getTitle());
-                        final Action actionSecondary = products.get(i).getActions().get(1);
-                        buttonSecondary.setOnClickListener(new View.OnClickListener() {
+                        buttonPrimary.setVisibility(View.VISIBLE);
+                        buttonPrimary.setText(products.get(i).getActions().get(0).getTitle());
+                        final Action action = products.get(i).getActions().get(0);
+                        buttonPrimary.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(actionSecondary.getUrl()!=null){
+                                if(action.getUrl()!=null){
                                     Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setData(Uri.parse(actionSecondary.getUrl()));
+                                    i.setData(Uri.parse(action.getUrl()));
                                     context.startActivity(i);
                                 }else{
-                                    ((ChatActivity)context).sendActionEvent(new SendActionEvent(actionSecondary));
+
+                                    ((ChatActivity)context).sendActionEvent(new SendActionEvent(action));
                                 }
                             }
                         });
-                    }else {
-                        buttonSecondary.setVisibility(View.GONE);
+
+                        if(products.get(i).getActions().size()>1){
+                            buttonSecondary.setVisibility(View.VISIBLE);
+                            buttonSecondary.setText(products.get(i).getActions().get(1).getTitle());
+                            final Action actionSecondary = products.get(i).getActions().get(1);
+                            buttonSecondary.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(actionSecondary.getUrl()!=null){
+                                        Intent i = new Intent(Intent.ACTION_VIEW);
+                                        i.setData(Uri.parse(actionSecondary.getUrl()));
+                                        context.startActivity(i);
+                                    }else{
+                                        ((ChatActivity)context).sendActionEvent(new SendActionEvent(actionSecondary));
+                                    }
+                                }
+                            });
+                        }else {
+                            buttonSecondary.setVisibility(GONE);
+                        }
                     }
                 }else{
-                    buttonPrimary.setVisibility(View.GONE);
-                    buttonSecondary.setVisibility(View.GONE);
+                    buttonPrimary.setVisibility(GONE);
+                    buttonSecondary.setVisibility(GONE);
                 }
 
                 int detailsMarginBottom = products.get(i).getActions()!=null?(products.get(i).getActions().size()>1? margin42 *2:(products.get(i).getActions().size()>0)? margin42 :0):0;
@@ -452,9 +534,15 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                 layoutParams.setMargins(0,0,0,detailsMarginBottom);
                 searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setLayoutParams(layoutParams);
 
-                DrawableManager.getInstance(context).fetchDrawableOnThread(products.get(i).getImage(), ((ImageView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_image)));
+
+                if(products.get(i).getImage() != null){
+                    DrawableManager.getInstance(context).fetchDrawableOnThread(products.get(i).getImage(), ((ImageView) searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_image)));
+                }else{
+                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_image).setVisibility(GONE);
+                }
+
             }else{
-                searchViewHolder.productsLayouts.get(i).setVisibility(View.GONE);
+                searchViewHolder.productsLayouts.get(i).setVisibility(GONE);
             }
         }
 
@@ -489,7 +577,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         } else {
             productViewHolder = (ProductViewHolder) view.getTag();
         }
-        productViewHolder.productActions.setVisibility(View.GONE);
+        productViewHolder.productActions.setVisibility(GONE);
         productViewHolder.timestamp.setVisibility(View.VISIBLE);
 
         try {
@@ -504,21 +592,21 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         if (chatResponse != null) {
             final Product product = chatResponse.getProduct();
             if (product != null) {
-                productViewHolder.imageView.setVisibility(View.GONE);
+                productViewHolder.imageView.setVisibility(GONE);
                 if(product.getName()!=null){
                     productViewHolder.productName.setVisibility(View.VISIBLE);
                     productViewHolder.productName.setText(product.getName());
                     productViewHolder.productDetails.setVisibility(View.VISIBLE);
                 }else{
-                    productViewHolder.productName.setVisibility(View.GONE);
-                    productViewHolder.productDetails.setVisibility(View.GONE);
+                    productViewHolder.productName.setVisibility(GONE);
+                    productViewHolder.productDetails.setVisibility(GONE);
                 }
 
                 if (product.getPrice() != null) {
                     productViewHolder.productPrice.setText(Html.fromHtml(product.getPrice()));
                     productViewHolder.productPrice.setVisibility(View.VISIBLE);
                 } else {
-                    productViewHolder.productPrice.setVisibility(View.GONE);
+                    productViewHolder.productPrice.setVisibility(GONE);
                 }
 
                 if (product.getPriceOriginal() != null && !product.getPriceOriginal().equals(product.getPrice())) {
@@ -531,15 +619,15 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                         productViewHolder.productPriceDiscount.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    productViewHolder.productPriceOriginal.setVisibility(View.GONE);
-                    productViewHolder.productPriceDiscount.setVisibility(View.GONE);
+                    productViewHolder.productPriceOriginal.setVisibility(GONE);
+                    productViewHolder.productPriceDiscount.setVisibility(GONE);
                 }
 
                 if (product.getDescription() != null) {
                     productViewHolder.productDescription.setVisibility(View.VISIBLE);
                     productViewHolder.productDescription.setText(Html.fromHtml(product.getDescription()));
                 } else {
-                    productViewHolder.productDescription.setVisibility(View.GONE);
+                    productViewHolder.productDescription.setVisibility(GONE);
                 }
 
                 if (product.getUrl() != null) {
@@ -555,7 +643,7 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                         }
                     });
                 } else {
-                    productViewHolder.productActions.setVisibility(View.GONE);
+                    productViewHolder.productActions.setVisibility(GONE);
                 }
 
                 if (product.getImage() != null) {
@@ -631,15 +719,15 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
 
         if(chatMessage.getBitmap() != null){
             ownViewHolder.productLayout.setVisibility(View.VISIBLE);
-            ownViewHolder.message.setVisibility(View.GONE);
-            ownViewHolder.productPrice.setVisibility(View.GONE);
-            ownViewHolder.productTitle.setVisibility(View.GONE);
+            ownViewHolder.message.setVisibility(GONE);
+            ownViewHolder.productPrice.setVisibility(GONE);
+            ownViewHolder.productTitle.setVisibility(GONE);
             ownViewHolder.productImage.setVisibility(View.VISIBLE);
             ownViewHolder.productImage.setImageBitmap(chatMessage.getBitmap());
             ownViewHolder.productImage.setOnClickListener(null);
         }else{
             ownViewHolder.message.setVisibility(View.VISIBLE);
-            ownViewHolder.productLayout.setVisibility(View.GONE);
+            ownViewHolder.productLayout.setVisibility(GONE);
 
             MessageObject messageObject = null;
             try{
@@ -649,20 +737,20 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             }
 
             if(messageObject!=null && (messageObject.getMessage()!=null || messageObject.getImage()!=null)){
-                ownViewHolder.message.setVisibility(View.GONE);
+                ownViewHolder.message.setVisibility(GONE);
 
                 String title = messageObject.getMessage();
                 if(title != null){
                     ownViewHolder.productTitle.setText(title);
                     ownViewHolder.productTitle.setVisibility(View.VISIBLE);
                 }else{
-                    ownViewHolder.productTitle.setVisibility(View.GONE);
+                    ownViewHolder.productTitle.setVisibility(GONE);
                 }
                 if(messageObject.getPriceString() != null){
                     ownViewHolder.productPrice.setText(messageObject.getPriceString());
                     ownViewHolder.productPrice.setVisibility(View.VISIBLE);
                 }else{
-                    ownViewHolder.productPrice.setVisibility(View.GONE);
+                    ownViewHolder.productPrice.setVisibility(GONE);
                 }
 
                 if(messageObject.getImage()!=null){
@@ -682,11 +770,11 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                         }
                     });
                 }else{
-                    ownViewHolder.productImage.setVisibility(View.GONE);
+                    ownViewHolder.productImage.setVisibility(GONE);
                 }
                 ownViewHolder.productLayout.setVisibility(View.VISIBLE);
             }else {
-                ownViewHolder.productLayout.setVisibility(View.GONE);
+                ownViewHolder.productLayout.setVisibility(GONE);
                 ownViewHolder.message.setVisibility(View.VISIBLE);
                 ownViewHolder.timestamp.setVisibility(View.VISIBLE);
                 ownViewHolder.message.setText(Html.fromHtml(chatMessage.getMessage()));

@@ -14,9 +14,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         HashMap<String,String> props = new HashMap<>();
-        props.put("account","bajaj_finserv");
-        props.put("country","IN");
-        props.put("name","Bajaj Finserv");
+        props.put("account","eca_bot");
+        props.put("name","AP Field Tracker");
         YellowMessenger.init(this.getApplicationContext(),props);
     }
 

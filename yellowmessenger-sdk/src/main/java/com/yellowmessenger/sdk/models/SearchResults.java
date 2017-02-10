@@ -12,6 +12,7 @@ public class SearchResults implements Serializable{
     private HashMap params;
     private Option action;
     private boolean portraitImage = true;
+    private boolean selection = false;
 
     public List<Product> getProducts() {
         return products;
@@ -67,5 +68,13 @@ public class SearchResults implements Serializable{
 
     public void setPortraitImage(boolean portraitImage) {
         this.portraitImage = portraitImage;
+    }
+
+    public boolean isSelection() {
+        return selection;
+    }
+
+    public void setSelection(boolean selection) {
+        this.selection = selection;
     }
 }
