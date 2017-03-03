@@ -64,6 +64,15 @@ public class PreferencesManager {
         return pref.getString("name-"+username, username);
     }
 
+    public void setFirebaseDeviceID (String deviceToken) {
+        editor.putString("firebaseDeviceToken", deviceToken);
+        editor.commit();
+    }
+
+    public String getFirebaseDeviceID () {
+        return pref.getString("firebaseDeviceToken", null);
+    }
+
     public String getAccount(){
         return pref.getString("props-account", null);
     }
@@ -75,4 +84,6 @@ public class PreferencesManager {
     public String getName() {
         return pref.getString("props-name", null);
     }
+
+    public String getAuthorizationToken() { return pref.getString("props-authorizationToken", null); }
 }

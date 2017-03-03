@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,6 +41,7 @@ import com.yellowmessenger.sdk.models.ChatResponse;
 import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 import com.yellowmessenger.sdk.receivers.UploadReceiver;
+import com.yellowmessenger.sdk.utils.NotificationUtil;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.xmpp.CustomSCRAMSHA1Mechanism;
 
@@ -128,6 +130,16 @@ public class XMPPService extends Service {
             // Add the jid to the cache
             Log.d(TAG, "authenticated: ");
             try{
+                Context context = getApplicationContext();
+                PreferencesManager prefManager = PreferencesManager.getInstance(context);
+
+                String firebaseDeviceID = prefManager.getFirebaseDeviceID();
+                XMPPUser xmppUser = prefManager.getXMPPUser();
+                if (firebaseDeviceID != null && xmppUser != null) {
+                    String authToken = PreferencesManager.getInstance(getApplicationContext()).getAuthorizationToken();
+                    NotificationUtil.sendDeviceTokenToServer(firebaseDeviceID,xmppUser.getUsername(),authToken,getApplicationContext());
+                }
+
                 mConnection.sendStanza(presence);
             }catch (Exception e){
 
@@ -683,7 +695,7 @@ public class XMPPService extends Service {
         }
     }
     boolean creatingUser = false;
-    private void createUser(String username){
+    private void createUser(final String username){
         try{
             creatingUser = true;
             String salt = "a04aa6a74e76bf8f57b0e2e715138171";
@@ -699,7 +711,7 @@ public class XMPPService extends Service {
 
             String hash = sb.toString();
 
-            String url = "https://flux.botplatform.io/xmpp/createUser";
+            String url = "https://sso.botplatform.io/createUser";
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username",username);
             jsonObject.put("hash",hash);
