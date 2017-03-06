@@ -19,7 +19,6 @@ public class FirebaseService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         super.onTokenRefresh();
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        System.out.println(FirebaseInstanceId.getInstance().getId());
 
         // Save the Token in Preferences
         Context context = getApplicationContext();
@@ -32,8 +31,6 @@ public class FirebaseService extends FirebaseInstanceIdService {
             String authToken = prefManager.getAuthorizationToken();
             if (authToken != null) {
                 NotificationUtil.sendDeviceTokenToServer(refreshedToken, xmppUser.getUsername(), authToken, context);
-            } else {
-                System.out.println("AuthorizationToken is null -- FirebaseService.onTokenRefresh");
             }
         }
     }

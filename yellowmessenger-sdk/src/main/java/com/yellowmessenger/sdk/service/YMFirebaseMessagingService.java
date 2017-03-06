@@ -19,7 +19,6 @@ public class YMFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        System.out.println("Received a Notification");
         if (remoteMessage.getNotification() != null) {
             notifcationHandler(remoteMessage);
         }

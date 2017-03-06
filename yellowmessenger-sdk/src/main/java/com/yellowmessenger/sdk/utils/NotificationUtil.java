@@ -10,7 +10,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.yellowmessenger.sdk.service.FirebaseService;
 
 import org.json.JSONObject;
 
@@ -25,24 +24,19 @@ public class NotificationUtil {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = "https://notifications.botplatform.io/push/registerDevice";
         deviceId = FirebaseInstanceId.getInstance().getToken();
-        System.out.println("Device id is " + deviceId);
-        System.out.println("Username is " + username);
         JSONObject body = new JSONObject();
         try {
             body.put ("deviceId",deviceId);
             body.put ("profileId",username);
-
-            System.out.println(username);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, body,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
                                 if (response.getBoolean("success")) {
-                                    System.out.println("Device Successfully Registered with Server");
+
                                 } else {
-                                    System.out.println("Device did not register with Server");
-                                    System.out.println(response.getString("message"));
+
                                 }
                             } catch (Exception e) {
 
@@ -58,7 +52,7 @@ public class NotificationUtil {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     HashMap <String, String> headers = new HashMap<>();
-                    headers.put("BP_AUTH_TOKEN",authorizationToken);
+                    headers.put("bp-auth-token",authorizationToken);
                     return headers;
                 }
             };
