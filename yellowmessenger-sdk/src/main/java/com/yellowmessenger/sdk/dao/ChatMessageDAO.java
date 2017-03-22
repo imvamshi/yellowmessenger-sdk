@@ -1,5 +1,6 @@
 package com.yellowmessenger.sdk.dao;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
 
@@ -22,6 +23,13 @@ public class ChatMessageDAO extends BaseDAO<ChatMessage>{
                 .offset(offset)
                 .orderBy("id DESC")
                 .execute();
+    }
+
+    public static void deletAllByUesername(String username) {
+        new Delete()
+            .from(ChatMessage.class)
+            .where("username = ?", username)
+            .execute();
     }
 
     public static ChatMessage getChatMessageByStanzaId(String stanzaId) {

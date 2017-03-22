@@ -26,6 +26,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +75,6 @@ import com.yellowmessenger.sdk.utils.ChatListAdapter;
 import com.yellowmessenger.sdk.utils.DotsTextView;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.utils.S3Utils;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
@@ -311,6 +313,42 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     protected void onPause() {
         EventBus.getDefault().post(new ChatDisconnectedEvent(username));
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_activity_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void clearLog(){
+        this.chatMessages.clear();
+        ChatMessageDAO.deletAllByUesername(username);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chatListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(R.id.clear_chat == item.getItemId()){
+            clearLog();
+            return true;
+        }else{
+            switch (item.getItemId()) {
+                // Respond to the action bar's Up/Home button
+                case android.R.id.home:
+                    //NavUtils.navigateUpFromSameTask(this);
+                    onBackPressed();
+                    return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
