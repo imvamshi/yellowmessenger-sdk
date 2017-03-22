@@ -687,7 +687,7 @@ public class XMPPService extends Service {
         @Override
         public void run() {
             ChatMessage chatMessage = ChatMessageDAO.getChatMessageByStanzaId(stanzaId);
-            if(!chatMessage.getAcknowledged() && isOnline()){
+            if(chatMessage !=null && !chatMessage.getAcknowledged() && isOnline()){
                 if(!connecting){
                     EventBus.getDefault().post(new LoginEvent(true));
                 }
