@@ -160,13 +160,18 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         queue = Volley.newRequestQueue(ChatActivity.this);
         dots = (DotsTextView) findViewById(R.id.dots);
 
-        if(mGoogleApiClient==null){
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this , this )
-                    .addApi(Places.GEO_DATA_API)
-                    .addApi(Places.PLACE_DETECTION_API)
-                    .build();
+        try {
+            if(mGoogleApiClient==null){
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
+                        .enableAutoManage(this , this )
+                        .addApi(Places.GEO_DATA_API)
+                        .addApi(Places.PLACE_DETECTION_API)
+                        .build();
+            }
+        } catch (Exception e) {
+
         }
+
 
         // set listeners
         setListeners();

@@ -19,7 +19,7 @@ App level gradle file
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Add this line 
-	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.2.5'
+	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.2.9'
 }
 ```
 
@@ -35,6 +35,7 @@ public class App extends Application {
         props.put("account","<Account provided by yellowmessenger>");
         props.put("country","IN");
         props.put("name","<Name>");
+        props.put("authorizationToken","<Authorization Token Provided by Yellow Messenger>");
         YellowMessenger.init(this.getApplicationContext(),props);
     }
 
