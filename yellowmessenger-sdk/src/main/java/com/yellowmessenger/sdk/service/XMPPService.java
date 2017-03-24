@@ -564,10 +564,15 @@ public class XMPPService extends Service {
                             anonymousConnection.login();
                         }
                     }catch (Exception e){
-                        if(anonymousConnection.getUser()!=null){
-                            createUser(anonymousConnection.getUser().getLocalpart().toString());
+                        try{
+                            if(anonymousConnection.getUser()!=null){
+                                createUser(anonymousConnection.getUser().getLocalpart().toString());
+                            }else{
+                                anonymousConnection.connect();
+                            }
+                        }catch (Exception ex){
+                            ex.printStackTrace();
                         }
-                        e.printStackTrace();
                     }
                 }
 
