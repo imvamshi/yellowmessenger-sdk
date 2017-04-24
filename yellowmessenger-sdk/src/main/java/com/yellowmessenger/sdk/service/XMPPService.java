@@ -133,11 +133,15 @@ public class XMPPService extends Service {
                 Context context = getApplicationContext();
                 PreferencesManager prefManager = PreferencesManager.getInstance(context);
 
-                String firebaseDeviceID = prefManager.getFirebaseDeviceID();
-                XMPPUser xmppUser = prefManager.getXMPPUser();
-                if (firebaseDeviceID != null && xmppUser != null) {
-                    String authToken = PreferencesManager.getInstance(getApplicationContext()).getAuthorizationToken();
-                    NotificationUtil.sendDeviceTokenToServer(firebaseDeviceID,xmppUser.getUsername(),authToken,getApplicationContext());
+                try{
+                    String firebaseDeviceID = prefManager.getFirebaseDeviceID();
+                    XMPPUser xmppUser = prefManager.getXMPPUser();
+                    if (firebaseDeviceID != null && xmppUser != null) {
+                        String authToken = PreferencesManager.getInstance(getApplicationContext()).getAuthorizationToken();
+                        NotificationUtil.sendDeviceTokenToServer(firebaseDeviceID,xmppUser.getUsername(),authToken,getApplicationContext());
+                    }
+                }catch(Exception e){
+
                 }
 
                 mConnection.sendStanza(presence);
