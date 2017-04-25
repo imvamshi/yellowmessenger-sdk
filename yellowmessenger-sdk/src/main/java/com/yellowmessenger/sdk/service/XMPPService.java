@@ -426,7 +426,10 @@ public class XMPPService extends Service {
         try{
             if (!mConnection.isConnected() && !mConnection.isAuthenticated()) {
                 mConnection.connect();
+            }else if(mConnection.isConnected() && !mConnection.isAuthenticated()){
+                mConnection.login();
             }
+
         }catch (Exception e){
             //e.printStackTrace();
         }
@@ -447,17 +450,6 @@ public class XMPPService extends Service {
             createConnection();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (mConnection != null && (!mConnection.isConnected() || !mConnection.isAuthenticated())) {
-            if (!mConnection.isConnected()) {
-                try {
-                    Log.d(TAG,"Reconnecting ...");
-                    mConnection.connect();
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
-            }
         }
     }
 
