@@ -117,11 +117,7 @@ public class XMPPService extends Service {
     ConnectionListener connectionListener = new ConnectionListener() {
         @Override
         public void connected(XMPPConnection connection) {
-            try {
-                mConnection.login();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         }
 
         @Override
@@ -154,7 +150,7 @@ public class XMPPService extends Service {
         public void connectionClosed() {
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    mConnection.connect();
+                    mConnection.connect().login();
                 }
             }catch (Exception ex){
                 //ex.printStackTrace();
@@ -166,7 +162,7 @@ public class XMPPService extends Service {
         public void connectionClosedOnError(Exception e) {
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    mConnection.connect();
+                    mConnection.connect().login();
                 }
             }catch (Exception ex){
                 //ex.printStackTrace();
@@ -201,7 +197,7 @@ public class XMPPService extends Service {
 
     StanzaListener packetListener = new StanzaListener() {
         @Override
-        public void processStanza(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException {
+        public void processPacket(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException {
             if (stanza instanceof Message) {
                 Message message = (Message) stanza;
                 Jid sender = message.getFrom();
@@ -221,7 +217,7 @@ public class XMPPService extends Service {
     StanzaListener pingPacketListener = new StanzaListener() {
 
         @Override
-        public void processStanza(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException {
+        public void processPacket(Stanza stanza) throws SmackException.NotConnectedException, InterruptedException {
             try{
                 mConnection.sendStanza(((Ping) stanza).getPong());
             }catch (Exception e){
@@ -398,13 +394,13 @@ public class XMPPService extends Service {
             mConnection.setPreferredResumptionTime(5);
 
             mConnection.setUseStreamManagement(true);
-            // mConnection.setUseStreamManagementResumption(true);
+            mConnection.setUseStreamManagementResumption(true);
             mConnection.addAsyncStanzaListener(packetListener, packetFilter);
             mConnection.addAsyncStanzaListener(pingPacketListener, pingPacketFilter);
             mConnection.addStanzaAcknowledgedListener(new StanzaListener(){
 
                 @Override
-                public void processStanza(Stanza packet) throws SmackException.NotConnectedException {
+                public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
                     // TODO Acknowledgement
                     ChatMessage chatMessage = ChatMessageDAO.getChatMessageByStanzaId(packet.getStanzaId());
                     if(chatMessage!=null){
@@ -425,7 +421,7 @@ public class XMPPService extends Service {
         }
         try{
             if (!mConnection.isConnected() && !mConnection.isAuthenticated()) {
-                mConnection.connect();
+                mConnection.connect().login();
             }else if(mConnection.isConnected() && !mConnection.isAuthenticated()){
                 mConnection.login();
             }
