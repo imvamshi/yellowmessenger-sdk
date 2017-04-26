@@ -388,17 +388,17 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(5000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(4000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(5000);
-            mConnection.setPreferredResumptionTime(10);
+            mConnection.setPacketReplyTimeout(4000);
+            mConnection.setPreferredResumptionTime(5);
 
             mConnection.setUseStreamManagement(true);
-            mConnection.setUseStreamManagementResumption(true);
+            // mConnection.setUseStreamManagementResumption(true);
             mConnection.addAsyncStanzaListener(packetListener, packetFilter);
             mConnection.addAsyncStanzaListener(pingPacketListener, pingPacketFilter);
             mConnection.addStanzaAcknowledgedListener(new StanzaListener(){
