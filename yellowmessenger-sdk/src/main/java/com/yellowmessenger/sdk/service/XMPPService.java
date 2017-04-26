@@ -117,7 +117,7 @@ public class XMPPService extends Service {
     ConnectionListener connectionListener = new ConnectionListener() {
         @Override
         public void connected(XMPPConnection connection) {
-
+            XMPPService.this.connecting = false;
         }
 
         @Override
@@ -152,7 +152,6 @@ public class XMPPService extends Service {
             XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    XMPPService.this.connecting = true;
                     mConnection.connect().login();
                 }
             }catch (Exception ex){
@@ -166,7 +165,6 @@ public class XMPPService extends Service {
             XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    XMPPService.this.connecting = true;
                     mConnection.connect().login();
                 }
             }catch (Exception ex){
@@ -394,14 +392,14 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(3000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(5000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(3000);
-            mConnection.setPreferredResumptionTime(3);
+            mConnection.setPacketReplyTimeout(5000);
+            mConnection.setPreferredResumptionTime(10);
 
             mConnection.setUseStreamManagement(true);
             mConnection.setUseStreamManagementResumption(true);
@@ -422,8 +420,8 @@ public class XMPPService extends Service {
             });
 
 
-            // SASLAuthentication.unregisterSASLMechanism("org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism");
-            // SASLAuthentication.registerSASLMechanism(new CustomSCRAMSHA1Mechanism());
+            SASLAuthentication.unregisterSASLMechanism("org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism");
+            SASLAuthentication.registerSASLMechanism(new CustomSCRAMSHA1Mechanism());
 
             mConnection.addConnectionListener(connectionListener);
             ServerPingWithAlarmManager.getInstanceFor(mConnection).setEnabled(true);
@@ -672,7 +670,7 @@ public class XMPPService extends Service {
         @Override
         protected void onPostExecute(Map map) {
             if(!(Boolean)map.get("unsent")){
-                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),5000);
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),8000);
             }
         }
     }
