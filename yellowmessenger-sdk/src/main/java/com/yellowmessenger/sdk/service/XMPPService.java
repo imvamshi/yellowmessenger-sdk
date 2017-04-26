@@ -122,6 +122,7 @@ public class XMPPService extends Service {
 
         @Override
         public void authenticated(XMPPConnection connection, boolean resumed) {
+            XMPPService.this.connecting = false;
             // Add the jid to the cache
             Log.d(TAG, "authenticated: ");
             try{
@@ -148,8 +149,10 @@ public class XMPPService extends Service {
 
         @Override
         public void connectionClosed() {
+            XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
+                    XMPPService.this.connecting = true;
                     mConnection.connect().login();
                 }
             }catch (Exception ex){
@@ -160,13 +163,16 @@ public class XMPPService extends Service {
 
         @Override
         public void connectionClosedOnError(Exception e) {
+            XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
+                    XMPPService.this.connecting = true;
                     mConnection.connect().login();
                 }
             }catch (Exception ex){
                 //ex.printStackTrace();
             }
+
             Log.d(TAG,"connection failed on error");
         }
 
@@ -192,6 +198,7 @@ public class XMPPService extends Service {
         @Override
         public void reconnectionFailed(Exception e) {
             Log.d(TAG,"connection failed");
+            XMPPService.this.connecting = false;
         }
     };
 
@@ -365,7 +372,7 @@ public class XMPPService extends Service {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            connecting = false;
+
         }
     }
 
