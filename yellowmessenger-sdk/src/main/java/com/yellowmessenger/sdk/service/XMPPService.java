@@ -437,7 +437,7 @@ public class XMPPService extends Service {
 
     private void login() {
         XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
-        if(xmppUser==null){
+        if(!creatingUser && xmppUser==null){
             anonymousUserLogin();
             return;
         }
@@ -688,9 +688,10 @@ public class XMPPService extends Service {
             }
         }
     }
-
+    boolean creatingUser = false;
     private void createUser(final String username){
         try{
+            creatingUser = true;
             String salt = "a04aa6a74e76bf8f57b0e2e715138171";
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update((username+salt).getBytes());
@@ -716,10 +717,12 @@ public class XMPPService extends Service {
                                 if (response.getBoolean("success") && PreferencesManager.getInstance(getBaseContext()).getXMPPUser()==null) {
                                     JSONObject data = response.getJSONObject("data");
                                     PreferencesManager.getInstance(getBaseContext()).setXMPPUser(new XMPPUser(data.getString("username"),data.getString("password")));
+                                    creatingUser = false;
                                     XMPPService.this.login();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                creatingUser = false;
                             }
                         }
                     },
@@ -727,6 +730,7 @@ public class XMPPService extends Service {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             error.printStackTrace();
+                            creatingUser = false;
                         }
                     });
 
