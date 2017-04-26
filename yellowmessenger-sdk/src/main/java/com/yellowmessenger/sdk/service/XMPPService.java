@@ -394,13 +394,13 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
-            SmackConfiguration.setDefaultPacketReplyTimeout(4000);
+            SmackConfiguration.setDefaultPacketReplyTimeout(3000);
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
 
             mConnection = new XMPPTCPConnection(connConfig);
-            mConnection.setPacketReplyTimeout(4000);
+            mConnection.setPacketReplyTimeout(3000);
             mConnection.setPreferredResumptionTime(3);
 
             mConnection.setUseStreamManagement(true);
@@ -422,8 +422,8 @@ public class XMPPService extends Service {
             });
 
 
-            SASLAuthentication.unregisterSASLMechanism("org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism");
-            SASLAuthentication.registerSASLMechanism(new CustomSCRAMSHA1Mechanism());
+            // SASLAuthentication.unregisterSASLMechanism("org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism");
+            // SASLAuthentication.registerSASLMechanism(new CustomSCRAMSHA1Mechanism());
 
             mConnection.addConnectionListener(connectionListener);
             ServerPingWithAlarmManager.getInstanceFor(mConnection).setEnabled(true);
