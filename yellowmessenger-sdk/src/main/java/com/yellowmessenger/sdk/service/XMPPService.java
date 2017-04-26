@@ -672,7 +672,7 @@ public class XMPPService extends Service {
         @Override
         protected void onPostExecute(Map map) {
             if(!(Boolean)map.get("unsent")){
-                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),8000);
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),5000);
             }
         }
     }
