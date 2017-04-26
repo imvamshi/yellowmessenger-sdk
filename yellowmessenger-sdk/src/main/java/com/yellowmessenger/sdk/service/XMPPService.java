@@ -401,7 +401,7 @@ public class XMPPService extends Service {
 
             mConnection = new XMPPTCPConnection(connConfig);
             mConnection.setPacketReplyTimeout(4000);
-            mConnection.setPreferredResumptionTime(5);
+            mConnection.setPreferredResumptionTime(3);
 
             mConnection.setUseStreamManagement(true);
             mConnection.setUseStreamManagementResumption(true);
@@ -672,7 +672,7 @@ public class XMPPService extends Service {
         @Override
         protected void onPostExecute(Map map) {
             if(!(Boolean)map.get("unsent")){
-                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),8000);
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),5000);
             }
         }
     }
