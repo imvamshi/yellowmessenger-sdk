@@ -361,6 +361,10 @@ public class XMPPService extends Service {
         @Override
         protected Void doInBackground(String... params) {
             Log.d(TAG, "Logging in...");
+            if(mConnection!=null && reconnect && mConnection.isConnected()){
+                mConnection.disconnect();
+                mConnection = null;
+            }
             XMPPService.this.login();
             return null;
         }
