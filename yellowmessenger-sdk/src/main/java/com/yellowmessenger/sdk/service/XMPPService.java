@@ -361,6 +361,9 @@ public class XMPPService extends Service {
         @Override
         protected Void doInBackground(String... params) {
             Log.d(TAG, "Logging in...");
+            if(creatingUser){
+                return null;
+            }
             if(mConnection!=null && reconnect && mConnection.isConnected()){
                 mConnection.instantShutdown();
                 mConnection = null;
@@ -444,6 +447,10 @@ public class XMPPService extends Service {
         XMPPUser xmppUser = PreferencesManager.getInstance(XMPPService.this.getApplicationContext()).getXMPPUser();
         if(!creatingUser && xmppUser==null){
             anonymousUserLogin();
+            return;
+        }
+
+        if(creatingUser){
             return;
         }
 
