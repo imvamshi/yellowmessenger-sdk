@@ -671,16 +671,19 @@ public class XMPPService extends Service {
         @Override
         protected void onPostExecute(Map map) {
             if(!(Boolean)map.get("unsent")){
-                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId")),8000);
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId"), false),6000);
+                new Handler().postDelayed(new AckRunnable((String)map.get("stanzaId"), false),12000);
             }
         }
     }
 
     private class AckRunnable implements Runnable{
         String stanzaId;
+        Boolean reconnect;
 
-        public AckRunnable(String stanzaId) {
+        public AckRunnable(String stanzaId, Boolean reconnect) {
             this.stanzaId = stanzaId;
+            this.reconnect = reconnect;
         }
 
         @Override
@@ -688,7 +691,7 @@ public class XMPPService extends Service {
             ChatMessage chatMessage = ChatMessageDAO.getChatMessageByStanzaId(stanzaId);
             if(chatMessage !=null && !chatMessage.getAcknowledged() && isOnline()){
                 if(!connecting){
-                    EventBus.getDefault().post(new LoginEvent(true));
+                    EventBus.getDefault().post(new LoginEvent(reconnect));
                 }
             }
         }
