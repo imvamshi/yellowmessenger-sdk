@@ -707,6 +707,9 @@ public class XMPPService extends Service {
     }
     boolean creatingUser = false;
     private void createUser(final String username){
+        if(creatingUser){
+            return;
+        }
         try{
             creatingUser = true;
             String salt = "a04aa6a74e76bf8f57b0e2e715138171";
