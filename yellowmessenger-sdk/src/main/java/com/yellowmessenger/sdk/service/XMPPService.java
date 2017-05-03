@@ -118,6 +118,11 @@ public class XMPPService extends Service {
         @Override
         public void connected(XMPPConnection connection) {
             XMPPService.this.connecting = false;
+            try{
+                mConnection.login();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -152,7 +157,7 @@ public class XMPPService extends Service {
             XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    mConnection.connect().login();
+                    mConnection.connect();
                 }
             }catch (Exception ex){
                 //ex.printStackTrace();
@@ -165,7 +170,7 @@ public class XMPPService extends Service {
             XMPPService.this.connecting = false;
             try{
                 if(!mConnection.isConnected() && isOnline()){
-                    mConnection.connect().login();
+                    mConnection.connect();
                 }
             }catch (Exception ex){
                 //ex.printStackTrace();
@@ -434,7 +439,7 @@ public class XMPPService extends Service {
         }
         try{
             if (!mConnection.isConnected() && !mConnection.isAuthenticated()) {
-                mConnection.connect().login();
+                mConnection.connect();
             }else if(mConnection.isConnected() && !mConnection.isAuthenticated()){
                 mConnection.login();
             }
