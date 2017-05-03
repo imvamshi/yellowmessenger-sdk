@@ -271,12 +271,27 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         init(intent);
     }
 
+    private void loadMapping(){
+        JsonObjectRequest jsonObjectRequest =  new JsonObjectRequest(Request.Method.GET, "https://bots.botplatform.io/vault/mapping?bot="+username, new JSONObject(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error1) {
+                error1.printStackTrace();
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+    }
+
     private void getChatHistory() {
         chatMessages.clear();
         List<ChatMessage> newChatMessages = ChatMessageDAO.findAllByUsername(username, 200, 0);
         if(newChatMessages.size()==0){
-            ChatMessage chatMessage = new ChatMessage(username, "GET_STARTED", name, true);
-            EventBus.getDefault().post(new SendMessageEvent(chatMessage));
+            loadMapping();
         }
         Collections.reverse(newChatMessages);
         chatMessages.addAll(newChatMessages);
