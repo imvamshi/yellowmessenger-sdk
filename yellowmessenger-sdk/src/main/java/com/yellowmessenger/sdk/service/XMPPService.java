@@ -398,7 +398,6 @@ public class XMPPService extends Service {
 
 
             SmackConfiguration.setDefaultPacketReplyTimeout(5000);
-            SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
@@ -559,7 +558,6 @@ public class XMPPService extends Service {
                     .setCustomSSLContext(SSLContext.getInstance("TLS"))
                     .setSocketFactory(SSLSocketFactory.getDefault())
                     .build();
-            SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
             final XMPPTCPConnection anonymousConnection  = new XMPPTCPConnection(anonymousConfig);
             anonymousConnection.addConnectionListener(new ConnectionListener() {
                 @Override
