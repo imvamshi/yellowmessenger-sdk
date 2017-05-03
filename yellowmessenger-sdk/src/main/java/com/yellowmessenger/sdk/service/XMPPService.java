@@ -396,7 +396,9 @@ public class XMPPService extends Service {
                     .setUsernameAndPassword(xmppUser.getUsername(),xmppUser.getPassword())
                     .build();
 
+
             SmackConfiguration.setDefaultPacketReplyTimeout(5000);
+            SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
             XMPPTCPConnection.setUseStreamManagementDefault(true);
             XMPPTCPConnection.setUseStreamManagementResumptionDefault(true);
 
@@ -547,6 +549,7 @@ public class XMPPService extends Service {
     // Create an anonymous account
     private void anonymousUserLogin(){
         try{
+
             XMPPTCPConnectionConfiguration anonymousConfig = XMPPTCPConnectionConfiguration.builder()
                     .performSaslAnonymousAuthentication()
                     .setXmppDomain(JidCreate.domainBareFrom(DOMAIN))
@@ -556,6 +559,7 @@ public class XMPPService extends Service {
                     .setCustomSSLContext(SSLContext.getInstance("TLS"))
                     .setSocketFactory(SSLSocketFactory.getDefault())
                     .build();
+            SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager");
             final XMPPTCPConnection anonymousConnection  = new XMPPTCPConnection(anonymousConfig);
             anonymousConnection.addConnectionListener(new ConnectionListener() {
                 @Override
