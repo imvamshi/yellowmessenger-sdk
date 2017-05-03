@@ -362,7 +362,7 @@ public class XMPPService extends Service {
         protected Void doInBackground(String... params) {
             Log.d(TAG, "Logging in...");
             if(mConnection!=null && reconnect && mConnection.isConnected()){
-                mConnection.disconnect();
+                mConnection.instantShutdown();
                 mConnection = null;
             }
             XMPPService.this.login();
