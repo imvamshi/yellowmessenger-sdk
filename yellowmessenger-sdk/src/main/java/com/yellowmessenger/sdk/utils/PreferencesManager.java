@@ -85,5 +85,9 @@ public class PreferencesManager {
         return pref.getString("props-name", null);
     }
 
+    public String getAudioEnabled() {
+        return pref.getString("props-audio", null);
+    }
+
     public String getAuthorizationToken() { return pref.getString("props-authorizationToken", null); }
 }

@@ -12,6 +12,10 @@ public class UploadStartEvent {
         this.uploadId = uploadId;
     }
 
+    public UploadStartEvent(String uploadId) {
+        this.uploadId = uploadId;
+    }
+
     public ChatMessage getChatMessage() {
         return chatMessage;
     }

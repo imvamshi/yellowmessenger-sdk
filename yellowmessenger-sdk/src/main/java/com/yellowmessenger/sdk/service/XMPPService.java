@@ -529,7 +529,6 @@ public class XMPPService extends Service {
         uploadMap.put(event.getUploadId(),chatMessage);
     }
 
-
     @Subscribe
     public void onEvent(LoginEvent event) {
         Log.d(TAG,"Login event received");

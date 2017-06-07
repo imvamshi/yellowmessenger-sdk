@@ -8,17 +8,15 @@ import com.yellowmessenger.sdk.service.YellowMessenger;
 
 import java.util.HashMap;
 
-/**
- * Created by kishore on 20/07/16.
- */
 public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
         HashMap<String,String> props = new HashMap<>();
-        props.put("account","eca_bot");
-        props.put("name","AP Field Tracker");
-        props.put ("authorizationToken","589617d3642aab705b255d72");
+        props.put("account","bot_1495864518793");
+        props.put("name","Emirates NBD");
+        props.put ("authorizationToken","592914c643e65e7cc5417384");
+        props.put("audio","true");
         YellowMessenger.init(this.getApplicationContext(),props);
     }
 

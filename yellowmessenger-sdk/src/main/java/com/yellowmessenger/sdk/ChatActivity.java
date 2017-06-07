@@ -3,6 +3,7 @@ package com.yellowmessenger.sdk;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -12,14 +13,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -39,8 +43,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -54,6 +56,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.yellowmessenger.sdk.dao.ChatMessageDAO;
+import com.yellowmessenger.sdk.events.AudioCompleteEvent;
 import com.yellowmessenger.sdk.events.ChatConnectedEvent;
 import com.yellowmessenger.sdk.events.ChatDisconnectedEvent;
 import com.yellowmessenger.sdk.events.ChatUpdatedEvent;
@@ -65,18 +68,22 @@ import com.yellowmessenger.sdk.events.SendMessageEvent;
 import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.fragments.ProductFragment;
+import com.yellowmessenger.sdk.fragments.RecordDialogFragment;
 import com.yellowmessenger.sdk.models.ChatType;
 import com.yellowmessenger.sdk.models.FieldType;
 import com.yellowmessenger.sdk.models.Option;
 import com.yellowmessenger.sdk.models.Product;
 import com.yellowmessenger.sdk.models.Question;
 import com.yellowmessenger.sdk.models.db.ChatMessage;
+import com.yellowmessenger.sdk.receivers.UploadReceiver;
+import com.yellowmessenger.sdk.utils.AudioUploader;
 import com.yellowmessenger.sdk.utils.ChatListAdapter;
 import com.yellowmessenger.sdk.utils.DotsTextView;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.utils.S3Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -89,6 +96,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -106,6 +114,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     EditText editText;
     ViewGroup optionsLayout;
     View sendView;
+    View recordButton;
     int padding10;
     int padding20;
     int margin5;
@@ -114,6 +123,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     int elevation;
     boolean listViewMoving = false;
     DotsTextView dots;
+    UploadReceiver uploadReceiver;
 
     public void sendMessage(View view) {
         String message = editText.getText().toString();
@@ -147,6 +157,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         chatListAdapter = new ChatListAdapter(this, chatMessages, name);
         listView = (ListView) findViewById(R.id.listView);
         sendView = findViewById(R.id.sendButton);
+        recordButton = findViewById(R.id.recordButton);
         padding10 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
         padding20 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
         margin5 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
@@ -172,15 +183,72 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
 
         }
 
+        uploadReceiver = new UploadReceiver();
 
         // set listeners
         setListeners();
         init(getIntent());
     }
 
+
+    RecordDialogFragment recordDialogFragment;
+
+    private void showNameDialog() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if(recordDialogFragment==null){
+            recordDialogFragment = new RecordDialogFragment();
+            Bundle bundle = new Bundle();
+            recordDialogFragment.setArguments(bundle);
+            recordDialogFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+            recordDialogFragment.show(ft, RecordDialogFragment.class.getName());
+            recordDialogFragment.setCancelable(false);
+        }else{
+            recordDialogFragment.show(ft, RecordDialogFragment.class.getName());
+        }
+    }
+
+    Boolean recording  = false;
+    String audioFile = "";
+    MediaRecorder recorder;
+
     private void setListeners() {
         listView.setAdapter(chatListAdapter);
         sendView.setOnClickListener(sendMessageListener);
+        if(PreferencesManager.getInstance(getApplicationContext()).getAudioEnabled() != null){
+            recordButton.setVisibility(View.VISIBLE);
+            recordButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!recording){
+                        audioFile = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                                File.separator + System.nanoTime() + "-file.mp3";
+
+                        recorder = new MediaRecorder();
+                        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                        recorder.setOutputFile(audioFile);
+
+
+                        try {
+                            recorder.prepare();
+                            recorder.start();
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        showNameDialog();
+                        recording = true;
+                    }
+                }
+            });
+        }
+
+
+
+
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -216,9 +284,51 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         });
     }
 
+    String language = "EN";
+    ProgressDialog dialog;
+
+    public void stopRecording(){
+        recording = false;
+        recorder.stop();
+        recorder.reset();
+        recorder.release();
+        recorder = null;
+        recordDialogFragment.dismiss();
+        AudioUploader.uploadMultipart(getApplicationContext(), audioFile, language);
+
+        if(dialog == null){
+            dialog = new ProgressDialog(this);
+        }
+        dialog.setMessage("Analysing your speech ...");
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
     @Subscribe
     public void onEvent(final MessageReceivedEvent event) {
         addMessage(event.getChatMessage());
+        TextToSpeech tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+            }
+        });
+        tts.setLanguage(Locale.US);
+        switch(event.getChatMessage().getChatType()){
+            case MESSAGE:
+                tts.speak(event.getChatMessage().getMessage(), TextToSpeech.QUEUE_ADD, null);
+                break;
+            case QUESTION:
+                tts.speak(event.getChatMessage().getChatResponse().getQuestion().getQuestion(), TextToSpeech.QUEUE_ADD, null);
+                break;
+            case RESULTS:
+                tts.speak(event.getChatMessage().getChatResponse().getSearchResults().getMessage(), TextToSpeech.QUEUE_ADD, null);
+                break;
+            default:
+                break;
+
+        }
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -346,7 +456,24 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         if(R.id.clear_chat == item.getItemId()){
             clearLog();
             return true;
-        }else{
+        }else
+        if(R.id.english == item.getItemId()){
+            language = "EN";
+            return true;
+        }else
+        if(R.id.hindi == item.getItemId()){
+            language = "HI";
+            return true;
+        }else
+        if(R.id.telugu == item.getItemId()){
+            language = "TE";
+            return true;
+        }else
+        if(R.id.kannada == item.getItemId()){
+            language = "KA";
+            return true;
+        }else
+        {
             switch (item.getItemId()) {
                 // Respond to the action bar's Up/Home button
                 case android.R.id.home:
@@ -392,6 +519,19 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
                 optionsLayout.removeAllViews();
                 initiateSendMessageListener();
             }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(AudioCompleteEvent event) {
+        try {
+            JSONObject jsonObject = new JSONObject(event.getResponse());
+            ChatMessage chatMessage = new ChatMessage(username, jsonObject.getJSONArray("transcriptions").getJSONObject(0).getString("utf_text"), name, true);
+            EventBus.getDefault().post(new SendMessageEvent(chatMessage));
+            addMessage(chatMessage);
+            dialog.hide();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
