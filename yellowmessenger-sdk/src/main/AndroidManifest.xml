@@ -20,7 +20,7 @@
             android:value="com.yellowmessenger.sdk.models.db.ChatMessage" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDo0oSn2fJjj3M4bH3kUn1FH8FyGVKDm14" />
+            android:value="AIzaSyDD1ZqRHySEe_7hBrnwxdy_-9OwHPZ3bh8" />
 
         <activity
             android:name=".ChatActivity"
