@@ -1,4 +1,5 @@
 package com.yellowmessenger.sdk.utils;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -13,6 +14,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
 import com.yellowmessenger.sdk.R;
 
 

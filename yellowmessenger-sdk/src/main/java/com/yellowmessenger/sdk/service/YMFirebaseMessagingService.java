@@ -1,9 +1,7 @@
 package com.yellowmessenger.sdk.service;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

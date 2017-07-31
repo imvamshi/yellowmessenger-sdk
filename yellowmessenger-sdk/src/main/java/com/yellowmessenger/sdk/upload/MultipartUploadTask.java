@@ -2,7 +2,6 @@ package com.yellowmessenger.sdk.upload;
 
 import android.content.Intent;
 
-
 import com.yellowmessenger.sdk.upload.http.HttpConnection;
 
 import java.io.IOException;

@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +42,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -63,8 +63,8 @@ import com.yellowmessenger.sdk.events.ChatUpdatedEvent;
 import com.yellowmessenger.sdk.events.MessageAcknowledgementEvent;
 import com.yellowmessenger.sdk.events.MessageReceivedEvent;
 import com.yellowmessenger.sdk.events.SendActionEvent;
-import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.events.SendMessageEvent;
+import com.yellowmessenger.sdk.events.SendOptionEvent;
 import com.yellowmessenger.sdk.events.TypingEvent;
 import com.yellowmessenger.sdk.events.UploadStartEvent;
 import com.yellowmessenger.sdk.fragments.ProductFragment;
@@ -81,6 +81,7 @@ import com.yellowmessenger.sdk.utils.ChatListAdapter;
 import com.yellowmessenger.sdk.utils.DotsTextView;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.utils.S3Utils;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
@@ -94,10 +95,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener {

@@ -8,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-
 import com.yellowmessenger.sdk.events.NetworkChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;

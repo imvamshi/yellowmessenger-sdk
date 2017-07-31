@@ -2,8 +2,8 @@ package com.yellowmessenger.sdk.service;
 
 import android.content.Context;
 
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.yellowmessenger.sdk.models.XMPPUser;
 import com.yellowmessenger.sdk.utils.NotificationUtil;
 import com.yellowmessenger.sdk.utils.PreferencesManager;

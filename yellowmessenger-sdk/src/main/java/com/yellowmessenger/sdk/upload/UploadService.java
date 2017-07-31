@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
 
-
 import com.yellowmessenger.sdk.upload.http.HttpStack;
 import com.yellowmessenger.sdk.upload.http.impl.HurlStack;
 
