@@ -85,6 +85,10 @@ public class PreferencesManager {
         return pref.getString("props-name", null);
     }
 
+    public String getIcon() {
+        return pref.getString("props-icon", null);
+    }
+
     public String getAudioEnabled() {
         return pref.getString("props-audio", null);
     }

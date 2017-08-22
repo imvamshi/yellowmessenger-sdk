@@ -25,6 +25,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -371,6 +372,18 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         String oldUsername = username;
         username = intent.getExtras().getString("username");
         name = intent.getExtras().getString("name");
+
+        try{
+            if(PreferencesManager.getInstance(getApplicationContext()).getIcon() != null){
+                final ActionBar actionBar = getSupportActionBar();
+                actionBar.setIcon(R.drawable.ic_icon);
+                actionBar.setDisplayShowHomeEnabled(true);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         // Save the name
         PreferencesManager.getInstance(getApplicationContext()).setBusinessName(username,name);
         setTitle(name);
