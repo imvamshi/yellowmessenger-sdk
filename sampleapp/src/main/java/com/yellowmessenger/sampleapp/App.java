@@ -13,9 +13,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         HashMap<String,String> props = new HashMap<>();
-        props.put("account","bot_1495864518793");
-        props.put("name","Emirates NBD");
-        props.put ("authorizationToken","592914c643e65e7cc5417384");
+        props.put("account","bot_1493626407284");
+        props.put("name","BOING");
+        props.put ("authorizationToken","5906ee27b3426f58643c7859");
         props.put("audio","true");
         YellowMessenger.init(this.getApplicationContext(),props);
     }

@@ -6,6 +6,9 @@ import java.util.List;
 public class Option implements Serializable{
     private String value;
     private String label;
+
+    private String image;
+
     private List<Question> questions;
     private boolean location = false;
 
@@ -47,5 +50,13 @@ public class Option implements Serializable{
 
     public void setLocation(boolean location) {
         this.location = location;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

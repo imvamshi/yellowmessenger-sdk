@@ -410,7 +410,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
                 searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setVisibility(View.VISIBLE);
 
                 if(products.get(i).getActions()!=null && products.get(i).getActions().size()>0){
-                    searchViewHolder.productsLayouts.get(i).findViewById(R.id.product_details).setVisibility(View.GONE);
                     if(products.get(i).getActions().size()>2 || chatResponse.getSearchResults().isSelection()){
                         button1.setVisibility(View.GONE);
                         button2.setVisibility(View.GONE);

@@ -15,7 +15,7 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         card_view:cardBackgroundColor="@color/white"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,19 +32,19 @@
                 android:scaleType="centerCrop" />
 
             <RelativeLayout
+                android:id="@+id/product_details_layout"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
                 android:background="@drawable/product_background"
-                android:paddingLeft=".5dp"
+                android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:id="@+id/product_details_layout">
+                android:paddingLeft=".5dp">
 
                 <LinearLayout
+                    android:id="@+id/product_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/product_details"
                     android:orientation="vertical">
 
                     <TextView
@@ -53,10 +53,14 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:padding="6dp"
+                        android:paddingBottom="6dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="6dp"
                         android:text="Product Name "
-                        android:textColor="@color/primary_color_light"
+                        android:textColor="#476984"
                         android:textSize="14sp"
+                        android:textStyle="bold"
                         android:typeface="serif" />
 
                     <TextView
@@ -64,16 +68,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:paddingLeft="6dp"
-                        android:paddingRight="6dp"
                         android:paddingBottom="6dp"
-                        android:textColor="@color/primary_color_light"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="#666666"
                         android:textSize="13sp"
                         android:typeface="serif" />
 
                     <TextView
                         android:id="@+id/product_price"
-                        android:layout_below="@+id/product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
@@ -85,7 +88,6 @@
 
                     <TextView
                         android:id="@+id/product_price_original"
-                        android:layout_below="@+id/product_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="left"
@@ -95,7 +97,6 @@
                         android:typeface="serif" />
 
                     <TextView
-                        android:layout_below="@+id/product_price_original"
                         android:id="@+id/product_discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -111,23 +112,23 @@
 
                 <TextView
                     android:id="@+id/product_action_button_secondary"
-                    android:layout_above="@+id/product_action_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_above="@+id/product_action_button"
                     android:layout_gravity="center"
                     android:background="@drawable/border_top"
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="Secondary button"
                     android:textColor="@color/primary_color"
-                    android:visibility="gone"
-                    android:typeface="serif" />
+                    android:typeface="serif"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/product_action_button"
-                    android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_gravity="center"
                     android:background="@drawable/buy_button_background"
                     android:gravity="center"

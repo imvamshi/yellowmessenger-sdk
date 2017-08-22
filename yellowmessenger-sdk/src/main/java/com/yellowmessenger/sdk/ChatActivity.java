@@ -13,8 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -79,6 +81,7 @@ import com.yellowmessenger.sdk.receivers.UploadReceiver;
 import com.yellowmessenger.sdk.utils.AudioUploader;
 import com.yellowmessenger.sdk.utils.ChatListAdapter;
 import com.yellowmessenger.sdk.utils.DotsTextView;
+import com.yellowmessenger.sdk.utils.DrawableManager;
 import com.yellowmessenger.sdk.utils.PreferencesManager;
 import com.yellowmessenger.sdk.utils.S3Utils;
 
@@ -120,6 +123,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     int margin2;
     int size15;
     int elevation;
+    int size20;
     boolean listViewMoving = false;
     DotsTextView dots;
     UploadReceiver uploadReceiver;
@@ -163,6 +167,8 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         margin2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
         size15 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 15, getResources().getDisplayMetrics());
         elevation = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 2, getResources().getDisplayMetrics());
+
+        size20 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
         optionsLayout = (ViewGroup) findViewById(R.id.optionsLayout);
         //View optionsLayoutView =  findViewById(R.id.optionsLayoutView);
         //optionsLayoutView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT));
@@ -571,7 +577,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         if (options != null) {
             for (final Option option : options) {
                 // Add Option button
-                createOptionButton(option.getLabel(), new View.OnClickListener() {
+                createOptionButton(option, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sendOption(question, option);
@@ -614,11 +620,14 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
 
 
     //
-    public TextView createOptionButton(String text, View.OnClickListener onClickListener) {
+    public TextView createOptionButton(final Option option, View.OnClickListener onClickListener) {
+
+
+        String text = option.getLabel();
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.setMargins(margin5, 0, margin5, margin2);
-        TextView optionButton = new TextView(this);
-        optionButton.setPadding(padding20, padding10, padding20, padding10);
+        final TextView optionButton = new TextView(this);
+        optionButton.setPadding(padding10, padding10, padding20, padding10);
         optionButton.setGravity(Gravity.CENTER);
         optionButton.setText(Html.fromHtml(text));
         optionButton.setTextSize(size15);
@@ -628,7 +637,32 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         optionButton.setBackgroundResource(R.drawable.option_button_background);
         optionButton.setLayoutParams(layoutParams);
         optionButton.setOnClickListener(onClickListener);
-        optionButton.setTextColor(Color.WHITE);
+        optionButton.setTextColor(getResources().getColorStateList(R.color.button_color));
+
+        if(option.getImage() != null){
+            new AsyncTask<String,Void,Void>(){
+                @Override
+                protected Void doInBackground(String... params) {
+                    try{
+                        final Drawable icon = DrawableManager.getInstance(getApplicationContext()).getDrawableFromUrl(option.getImage());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                icon.setBounds(0,0, size20, size20);
+                                optionButton.setCompoundDrawables(icon, null, null, null );
+                                optionButton.setCompoundDrawablePadding(margin5);
+                            }
+                        });
+
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+
         int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
         optionButton.setMaxWidth(width);
         optionsLayout.addView(optionButton);

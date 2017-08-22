@@ -15,7 +15,7 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         card_view:cardBackgroundColor="@color/white"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Secondary button"
-                android:textColor="@color/primary_color"
+                android:textColor="#cccccc"
                 android:typeface="serif"
                 android:visibility="gone" />
 
@@ -90,9 +90,13 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:padding="6dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:text="Product Name"
-                        android:textColor="@color/primary_color_light"
+                        android:textColor="#476984"
+                        android:textStyle="bold"
                         android:textSize="14sp"
                         android:typeface="serif" />
 
@@ -102,9 +106,9 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:paddingBottom="6dp"
-                        android:paddingLeft="6dp"
-                        android:paddingRight="6dp"
-                        android:textColor="@color/primary_color_light"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="#666666"
                         android:textSize="13sp"
                         android:typeface="serif" />
 

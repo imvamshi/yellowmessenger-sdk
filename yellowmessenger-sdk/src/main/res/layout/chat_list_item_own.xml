@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             card_view:cardBackgroundColor="@color/chat_background_color"
-            card_view:cardCornerRadius="4dp"
+            card_view:cardCornerRadius="20dp"
             android:minWidth="100dp"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="1dp"

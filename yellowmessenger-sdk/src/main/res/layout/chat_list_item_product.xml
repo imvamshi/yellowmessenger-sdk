@@ -25,7 +25,7 @@
            android:paddingBottom="1dp"
            android:paddingLeft="8dp"
            card_view:cardBackgroundColor="@color/white"
-           card_view:cardCornerRadius="4dp"
+           card_view:cardCornerRadius="20dp"
            android:id="@+id/linearLayout">
 
            <LinearLayout
@@ -66,7 +66,8 @@
                            android:gravity="left"
                            android:typeface="serif"
                            android:paddingTop="5dp"
-                           android:textColor="@color/primary_color"
+                           android:textStyle="bold"
+                           android:textColor="#476984"
                            />
 
                        <TextView
@@ -80,7 +81,7 @@
                            android:paddingTop="5dp"
                            android:visibility="gone"
                            android:textSize="14sp"
-                           android:textColor="@color/primary_color"
+                           android:textColor="#666666"
                            />
 
                        <LinearLayout

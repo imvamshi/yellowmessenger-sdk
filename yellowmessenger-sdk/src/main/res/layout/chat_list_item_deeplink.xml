@@ -24,7 +24,7 @@
             android:paddingBottom="1dp"
             android:paddingLeft="8dp"
             card_view:cardBackgroundColor="@color/white"
-            card_view:cardCornerRadius="4dp"
+            card_view:cardCornerRadius="20dp"
             android:id="@+id/linearLayout">
 
             <LinearLayout
