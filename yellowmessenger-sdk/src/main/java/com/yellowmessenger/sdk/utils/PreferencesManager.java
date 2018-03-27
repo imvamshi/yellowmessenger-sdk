@@ -37,14 +37,14 @@ public class PreferencesManager {
     }
 
     public void setXMPPUser(XMPPUser user){
-        editor.putString("xmpp-username", user.getUsername());
-        editor.putString("xmpp-password", user.getPassword());
+        editor.putString("xmpp-token", user.getUsername());
+        editor.putString("xmpp-key", user.getPassword());
         editor.commit();
     }
 
     public XMPPUser getXMPPUser(){
-        String username = pref.getString("xmpp-username", null);
-        String password = pref.getString("xmpp-password", null);
+        String username = pref.getString("xmpp-token", null);
+        String password = pref.getString("xmpp-key", null);
         return username!=null?new XMPPUser(username,password):null;
     }
 
