@@ -19,7 +19,7 @@ App level gradle file
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Add this line 
-	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.3.11'
+	compile 'com.github.yellowmessenger:yellowmessenger-sdk:v0.3.12'
 }
 ```
 
