@@ -1,5 +1,6 @@
 package com.yellowmessenger.sdk;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,7 +26,10 @@ import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -743,9 +748,81 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     static int SELECT_FILE = 101;
     static int PLACE_PICKER_REQUEST = 102;
     Uri fileUri = null;
+    String fileAbsPath = null;
     boolean fromUpload  = false;
 
     public void selectImage(View view) {
+        if (ContextCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+
+                || ContextCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+
+                || ContextCompat.checkSelfPermission(ChatActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+
+                    && ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this,
+                    Manifest.permission.CAMERA)
+
+                    && ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) ) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(ChatActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA,  Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            showAttachOptions();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    showAttachOptions();
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2345;
+
+    private void showAttachOptions(){
         final CharSequence[] items = { getString(R.string.take_picture), getString(R.string.choose_photos) , getString(R.string.share_location)};
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -785,37 +862,43 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
+    private Uri getOutputMediaFileUri(int type){
+        File f = getOutputMediaFile(type);
+        fileAbsPath = f.getAbsolutePath();
+        return FileProvider.getUriForFile(getApplicationContext(), "com.yellowmssenger.sdk.fileprovider", f);
     }
 
     /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
+    private File getOutputMediaFile(int type){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "YellowMessenger");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("YellowMessenger", "failed to create directory");
-                return null;
-            }
-        }
+        File mediaStorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
+            try{
+                mediaFile = File.createTempFile(
+                        "IMG_"+ timeStamp,
+                        ".jpg",
+                        mediaStorageDir
+                );
+            }catch(Exception e){
+                mediaFile = null;
+            }
+
         } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+            try{
+                mediaFile = File.createTempFile(
+                        "VID_"+ timeStamp,
+                        ".mp4",
+                        mediaStorageDir
+                );
+            }catch(Exception e){
+                mediaFile = null;
+            }
         } else {
             return null;
         }
@@ -831,7 +914,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
                 fromUpload = true;
                 String filename = "upload_"+(new Date()).getTime()+".jpeg";
 
-                String selectedImagePath = fileUri.getPath();
+                String selectedImagePath = fileAbsPath;
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 Bitmap bm = BitmapFactory.decodeFile(selectedImagePath, options);
@@ -888,30 +971,11 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         }
     }
 
+
     RequestQueue queue = null;
     public void fetchUploadUrl(final String filePath, final String filename){
         try{
-            String url = "https://api.botplatform.io/api/getPolicyParams?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(), new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try{
-                        String policyEncoded  = response.getString("policyEncoded");
-                        String signature  = response.getString("signature");
-                        String accessKey  = response.getString("accessKey");
-                        S3Utils.uploadMultipart(getApplicationContext(), filePath, PreferencesManager.getInstance(getApplicationContext()).getXMPPUser(), policyEncoded, signature, accessKey, filename);
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error1) {
-                    error1.printStackTrace();
-                }
-            });
-            queue.add(jsonObjectRequest);
+            S3Utils.uploadMultipart(getApplicationContext(), filePath, PreferencesManager.getInstance(getApplicationContext()).getXMPPUser(), "", "", "", filename);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -938,8 +1002,9 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         }
 
     }
+
     public void sendImageMessage(Bitmap bm, String filename) {
-        String message = "{\"type\":\"image\",\"image\":\"https://s3-ap-southeast-1.amazonaws.com/consoleuploads/uploads/"+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername()+ "/" + filename+"\"}";
+        String message = "";
         ChatMessage chatMessage = new ChatMessage(username,message,name,true);
         chatMessage.setBitmap(bm);
         addMessage(chatMessage);

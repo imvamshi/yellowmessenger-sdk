@@ -1,5 +1,6 @@
 package com.yellowmessenger.sdk.receivers;
 
+import com.google.gson.Gson;
 import com.yellowmessenger.sdk.events.AudioCompleteEvent;
 import com.yellowmessenger.sdk.events.UploadCompleteEvent;
 import com.yellowmessenger.sdk.upload.ServerResponse;
@@ -16,7 +17,9 @@ public class UploadReceiver extends UploadServiceBroadcastReceiver {
             String body = new String(serverResponse.getBody());
             EventBus.getDefault().post(new AudioCompleteEvent(body));
         }else{
-            EventBus.getDefault().post(new UploadCompleteEvent(uploadInfo.getUploadId()));
+            UploadCompleteEvent body = new Gson().fromJson(new String(serverResponse.getBody()), UploadCompleteEvent.class );
+            body.setUploadId(uploadInfo.getUploadId());
+            EventBus.getDefault().post(body);
         }
     }
 }

@@ -514,6 +514,7 @@ public class XMPPService extends Service {
     @Subscribe
     public void onEvent(UploadCompleteEvent event) {
         ChatMessage chatMessage = uploadMap.get(event.getUploadId());
+        chatMessage.setMessage("{\"type\":\"image\",\"image\": \""+event.getUrl()+"\"}");
         chatMessage.setBitmap(null);
         EventBus.getDefault().post(new SendMessageEvent(chatMessage));
     }

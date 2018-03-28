@@ -1,5 +1,6 @@
 package com.yellowmessenger.sdk.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,7 +54,7 @@ public class S3Utils {
         final MultipartUploadRequest request =
                 new MultipartUploadRequest(context,
                         filename,
-                        "https://consoleuploads.s3.amazonaws.com/");
+                        "https://chat.botplatform.io/upload-file?json=true");
 
         try{
             request.addFileToUpload(destination.getAbsolutePath(),

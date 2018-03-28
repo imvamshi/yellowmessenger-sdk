@@ -3,6 +3,8 @@
     package="com.yellowmessenger.sdk">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
@@ -31,6 +33,15 @@
             android:theme="@style/YellowMessengerAppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".ImageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_chat"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/YellowMessengerAppTheme"
+            android:windowSoftInputMode="adjustResize" />
+
         <service
             android:name=".service.XMPPService"
             android:enabled="true" />
@@ -48,7 +59,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.instance_id_event" />
             </intent-filter>
         </service>
 
@@ -60,6 +71,17 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.yellowmssenger.sdk.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 
 </manifest>

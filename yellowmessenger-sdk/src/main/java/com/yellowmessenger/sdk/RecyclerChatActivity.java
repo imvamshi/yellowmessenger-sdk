@@ -582,27 +582,7 @@ public class RecyclerChatActivity extends AppCompatActivity  implements GoogleAp
     RequestQueue queue = null;
     public void fetchUploadUrl(final String filePath, final String filename){
         try{
-            String url = "https://api.botplatform.io/api/getPolicyParams?username="+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername();
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(), new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try{
-                        String policyEncoded  = response.getString("policyEncoded");
-                        String signature  = response.getString("signature");
-                        String accessKey  = response.getString("accessKey");
-                        S3Utils.uploadMultipart(getApplicationContext(), filePath, PreferencesManager.getInstance(getApplicationContext()).getXMPPUser(), policyEncoded, signature, accessKey, filename);
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error1) {
-                    error1.printStackTrace();
-                }
-            });
-            queue.add(jsonObjectRequest);
+            S3Utils.uploadMultipart(getApplicationContext(), filePath, PreferencesManager.getInstance(getApplicationContext()).getXMPPUser(), "", "", "", filename);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -630,7 +610,7 @@ public class RecyclerChatActivity extends AppCompatActivity  implements GoogleAp
 
     }
     public void sendImageMessage(Bitmap bm, String filename) {
-        String message = "{\"type\":\"image\",\"image\":\"https://s3-ap-southeast-1.amazonaws.com/consoleuploads/uploads/"+ PreferencesManager.getInstance(getApplicationContext()).getXMPPUser().getUsername()+ "/" + filename+"\"}";
+        String message = "";
         ChatMessage chatMessage = new ChatMessage(username,message,name,true);
         chatMessage.setBitmap(bm);
         addMessage(chatMessage);
