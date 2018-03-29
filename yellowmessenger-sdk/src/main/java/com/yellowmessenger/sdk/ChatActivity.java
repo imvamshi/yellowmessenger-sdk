@@ -865,7 +865,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     private Uri getOutputMediaFileUri(int type){
         File f = getOutputMediaFile(type);
         fileAbsPath = f.getAbsolutePath();
-        return FileProvider.getUriForFile(getApplicationContext(), "com.yellowmssenger.sdk.fileprovider", f);
+        return FileProvider.getUriForFile(getApplicationContext(), getPackageName()+".fileprovider", f);
     }
 
     /** Create a File for saving an image or video */
