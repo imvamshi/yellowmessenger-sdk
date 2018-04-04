@@ -909,7 +909,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if(resultCode != RESULT_CANCELED){
             if (requestCode == REQUEST_CAMERA && fileUri!=null) {
                 fromUpload = true;
                 String filename = "upload_"+(new Date()).getTime()+".jpeg";
