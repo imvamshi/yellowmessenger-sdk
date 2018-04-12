@@ -156,6 +156,8 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     }
 
 
+    TextToSpeech tts;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,6 +183,12 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         //listView.addFooterView(optionsLayoutView);
         queue = Volley.newRequestQueue(ChatActivity.this);
         dots = (DotsTextView) findViewById(R.id.dots);
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+            }
+        });
 
         try {
             if(mGoogleApiClient==null){
@@ -318,26 +326,22 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     @Subscribe
     public void onEvent(final MessageReceivedEvent event) {
         addMessage(event.getChatMessage());
-        TextToSpeech tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
+        if(PreferencesManager.getInstance(getApplicationContext()).getAudioEnabled() != null && PreferencesManager.getInstance(getApplicationContext()).getAudioEnabled().equals("true")){
+            tts.setLanguage(Locale.US);
+            switch(event.getChatMessage().getChatType()){
+                case MESSAGE:
+                    tts.speak(event.getChatMessage().getMessage(), TextToSpeech.QUEUE_ADD, null);
+                    break;
+                case QUESTION:
+                    tts.speak(event.getChatMessage().getChatResponse().getQuestion().getQuestion(), TextToSpeech.QUEUE_ADD, null);
+                    break;
+                case RESULTS:
+                    tts.speak(event.getChatMessage().getChatResponse().getSearchResults().getMessage(), TextToSpeech.QUEUE_ADD, null);
+                    break;
+                default:
+                    break;
 
             }
-        });
-        tts.setLanguage(Locale.US);
-        switch(event.getChatMessage().getChatType()){
-            case MESSAGE:
-                tts.speak(event.getChatMessage().getMessage(), TextToSpeech.QUEUE_ADD, null);
-                break;
-            case QUESTION:
-                tts.speak(event.getChatMessage().getChatResponse().getQuestion().getQuestion(), TextToSpeech.QUEUE_ADD, null);
-                break;
-            case RESULTS:
-                tts.speak(event.getChatMessage().getChatResponse().getSearchResults().getMessage(), TextToSpeech.QUEUE_ADD, null);
-                break;
-            default:
-                break;
-
         }
 
         runOnUiThread(new Runnable() {
@@ -1016,6 +1020,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         mGoogleApiClient.disconnect();
+        tts.shutdown();
         super.onDestroy();
     }
 

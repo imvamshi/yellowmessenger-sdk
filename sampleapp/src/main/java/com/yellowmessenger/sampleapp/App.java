@@ -16,7 +16,7 @@ public class App extends Application {
         props.put("account","bot_1516338669308");
         props.put("name","VSO");
         props.put ("authorizationToken","5a617deda6df7b4fb6683555");
-        // props.put("audio","true");
+        // props.put("audio","false");
         YellowMessenger.init(this.getApplicationContext(),props);
     }
 

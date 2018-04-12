@@ -20,11 +20,15 @@ public class YellowMessenger {
 
     public static void init(Context context, HashMap<String,String> properties){
         getInstance(context);
-        // Start the xmpp service
-        instance.startXMPPService();
-        instance._context = context;
-        ActiveAndroid.initialize(context);
-        PreferencesManager.getInstance(context).setAccountProperties(properties);
+        try{
+            // Start the xmpp service
+            instance.startXMPPService();
+            instance._context = context;
+            ActiveAndroid.initialize(context);
+            PreferencesManager.getInstance(context).setAccountProperties(properties);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void terminate(){
@@ -39,12 +43,16 @@ public class YellowMessenger {
         return instance;
     }
 
-    public void startXMPPService() {
+    private void startXMPPService() {
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
-                Intent startServiceIntent = new Intent(_context, XMPPService.class);
-                _context.startService(startServiceIntent);
+                try{
+                    Intent startServiceIntent = new Intent(_context, XMPPService.class);
+                    _context.startService(startServiceIntent);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
