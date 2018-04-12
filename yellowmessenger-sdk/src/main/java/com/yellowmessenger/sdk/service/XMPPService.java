@@ -766,6 +766,5 @@ public class XMPPService extends Service {
 
     @Override
     public void onDestroy() {
-        startService(new Intent(getApplicationContext(), XMPPService.class));
     }
 }
