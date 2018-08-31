@@ -725,7 +725,7 @@ public class XMPPService extends Service {
 
             String hash = sb.toString();
 
-            String url = "https://sso.botplatform.io/createUser";
+            String url = "https://botplatform.io/createUser";
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username",username);
             jsonObject.put("hash",hash);

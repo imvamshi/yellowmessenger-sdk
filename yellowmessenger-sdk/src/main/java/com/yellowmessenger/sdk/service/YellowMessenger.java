@@ -44,17 +44,23 @@ public class YellowMessenger {
     }
 
     private void startXMPPService() {
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try{
-                    Intent startServiceIntent = new Intent(_context, XMPPService.class);
-                    _context.startService(startServiceIntent);
-                }catch(Exception e){
-                    e.printStackTrace();
+        try {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        Intent startServiceIntent = new Intent(_context, XMPPService.class);
+                        _context.startService(startServiceIntent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
-                return null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
