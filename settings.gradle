@@ -1,1 +1,1 @@
-include ':yellowmessenger-sdk', ':sampleapp'
+include ':yellowmessenger-sdk', ':sampleapp', ':curator'

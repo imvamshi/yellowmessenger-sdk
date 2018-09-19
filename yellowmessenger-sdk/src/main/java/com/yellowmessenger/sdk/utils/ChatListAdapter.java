@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import static android.view.View.GONE;
 
+@SuppressWarnings("ALL")
 public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
     private Context context;
     private static LayoutInflater inflater;
@@ -307,8 +308,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
             }
         }
 
-
-
         try {
             questionViewHolder.timestamp.setText(DateUtils.getRelativeTimeSpanString(format.parse(values.get(position).getTimestamp()).getTime(),(new Date()).getTime(),DateUtils.FORMAT_ABBREV_RELATIVE).toString());
         } catch (ParseException e) {
@@ -316,7 +315,6 @@ public class ChatListAdapter extends ArrayAdapter<ChatMessage> {
         }
         return view;
     }
-
 
     private View getSearchView(int position, View convertView, ViewGroup parent,boolean portraitMode) {
         View view = convertView;

@@ -164,24 +164,19 @@ public class ChatMessage extends Model{
 
             if(chatResponse != null && chatResponse.getProduct()!=null){
                 chatType = ChatType.PRODUCT;
-            }else
-            if(chatResponse != null && chatResponse.getSearchResults()!=null){
+            }else if(chatResponse != null && chatResponse.getSearchResults()!=null){
                 chatType = ChatType.RESULTS;
-            }else
-            if(chatResponse != null && chatResponse.getQuestion()!=null){
+            }else if(chatResponse != null && chatResponse.getQuestion()!=null){
                 chatType = ChatType.QUESTION;
-            }else
-            if(chatResponse != null && chatResponse.getDeepLink()!=null){
+            }else if(chatResponse != null && chatResponse.getDeepLink()!=null){
                 chatType = ChatType.DEEP_LINK;
-            }else
-            if(chatResponse != null && chatResponse.getTyping()!=null){
+            }else if(chatResponse != null && chatResponse.getTyping()!=null){
                 chatType = ChatType.TYPING;
-            }else
-            if(chatResponse != null && chatResponse.getLocation()!=null)
-            {
+            }else if(chatResponse != null && chatResponse.getLocation()!=null){
                 chatType = ChatType.LOCATION;
-            }else
-            {
+            } else if(chatResponse != null && chatResponse.getEvent()!=null){
+                chatType = ChatType.EVENT;
+            }else {
                 chatType = ChatType.MESSAGE;
             }
         }

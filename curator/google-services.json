@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "138573157801",
+    "firebase_url": "https://curator-684bf.firebaseio.com",
+    "project_id": "curator-684bf",
+    "storage_bucket": "curator-684bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138573157801:android:9e606fc2543c5bb5",
+        "android_client_info": {
+          "package_name": "com.viteos.curator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "138573157801-0qqumnv1cimv04v1g59rponfcqfb8kl4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.viteos.curator",
+            "certificate_hash": "3649305789e2607aae32f6803d2b7a0ec0499f3b"
+          }
+        },
+        {
+          "client_id": "138573157801-723k2jrk5ghak6gaj09kcicj9jtupt1t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYclKdaIo30p9j0BZt79MdFjI45CJVTfc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "138573157801-723k2jrk5ghak6gaj09kcicj9jtupt1t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

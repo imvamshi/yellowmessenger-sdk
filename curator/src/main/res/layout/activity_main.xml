@@ -4,9 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.yellowmessenger.sampleapp.MainActivity">
+    tools:context="com.viteos.curator.MainActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:src="@drawable/curator"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Curator"
+        android:layout_gravity="center"
+        android:textSize="20sp" />
 
     <com.yellowmessenger.sdk.views.ChatButton
         android:id="@+id/fab"

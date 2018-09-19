@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Emirates NBD</string>
+    <string name="app_content_text">Hello! your app content goes here</string>
 </resources>

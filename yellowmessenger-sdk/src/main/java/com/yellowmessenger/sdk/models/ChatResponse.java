@@ -2,6 +2,7 @@ package com.yellowmessenger.sdk.models;
 
 import java.util.List;
 
+
 public class ChatResponse {
     private Product product;
     private List<Product> products;
@@ -11,6 +12,7 @@ public class ChatResponse {
     private DeepLink deepLink;
     private Boolean typing;
     private Location location;
+    private Event event;
 
     public Location getLocation() {
         return location;
@@ -53,7 +55,7 @@ public class ChatResponse {
     }
 
     public boolean isValid() {
-        return getProduct()!=null || getSearchResults()!=null || getQuestion()!=null || getDeepLink()!=null;
+        return getProduct()!=null || getSearchResults()!=null || getQuestion()!=null || getDeepLink()!=null || getEvent()!=null;
     }
 
     public Boolean getSuccess() {
@@ -78,5 +80,13 @@ public class ChatResponse {
 
     public void setTyping(Boolean typing) {
         this.typing = typing;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

@@ -274,7 +274,10 @@ public class XMPPService extends Service {
 
             if(chatResponse.isValid()){
                 ChatMessage chatMessage = new ChatMessage(sender, message,sender, false);
-                chatMessage.save();
+                if(chatResponse.getEvent() == null){
+                    chatMessage.save();
+                }
+
                 if (XMPPService.this.username != null && sender.toLowerCase().equals(XMPPService.this.username.toLowerCase()))
                 {
                     Log.d("Event posting: ",message);

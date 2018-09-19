@@ -1,4 +1,4 @@
-package com.yellowmessenger.sampleapp;
+package com.viteos.curator;
 
 import android.app.Application;
 import android.content.Context;
