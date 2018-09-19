@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#f09667</color>
 
     <color name="white">#FFFFFF</color>
     <color name="primary_button_color">#DD003781</color>
