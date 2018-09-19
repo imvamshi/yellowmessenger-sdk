@@ -79,6 +79,9 @@ import java.util.Map;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
+import de.measite.minidns.DNSClient;
+import de.measite.minidns.dnsserverlookup.AndroidUsingExec;
+
 public class XMPPService extends Service {
     private static final String TAG = "Yellow Messenger - ";
     public static final String HOST = "xmpp.yellowmssngr.com";
@@ -316,6 +319,10 @@ public class XMPPService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        DNSClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
+        DNSClient.addDnsServerLookupMechanism(AndroidUsingExecLowPriority.INSTANCE);
+        DNSClient.addDnsServerLookupMechanism(new AndroidUsingLinkProperties(this));
+
         // The service is starting, due to a call to startService()
         //login();
         if (!connecting) {
