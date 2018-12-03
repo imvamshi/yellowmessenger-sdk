@@ -44,15 +44,6 @@
             android:theme="@style/YellowMessengerAppTheme"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".PDFActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_pdf"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/YellowMessengerAppTheme"
-            android:windowSoftInputMode="adjustResize" />
-
         <service
             android:name=".service.XMPPService"
             android:enabled="true" />

@@ -328,12 +328,7 @@ public class ChatActivity extends AppCompatActivity  implements GoogleApiClient.
         if(event.getChatMessage().getChatType() != ChatType.EVENT){
             addMessage(event.getChatMessage());
         } else if(event.getChatMessage().getChatResponse().getEvent().getCode() != null && event.getChatMessage().getChatResponse().getEvent().getCode().equals("load_pdf")){
-            Intent intent = new Intent(this.getApplicationContext(), PDFActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            Bundle bundle = new Bundle();
-            bundle.putString("url", event.getChatMessage().getChatResponse().getEvent().getUrl());
-            intent.putExtras(bundle);
-            getApplicationContext().startActivity(intent);
+
         }
 
         if(PreferencesManager.getInstance(getApplicationContext()).getAudioEnabled() != null && PreferencesManager.getInstance(getApplicationContext()).getAudioEnabled().equals("true")){
